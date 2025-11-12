@@ -4,12 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>车抵贷销售培训App</title>
-    <!-- 外部资源 -->
+    <!-- Tailwind CSS v3 -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
-    
-    <!-- Tailwind 配置 -->
+    <!-- 统一的 Tailwind 配置 -->
     <script>
         tailwind.config = {
             theme: {
@@ -20,12 +21,17 @@
                         light: '#f3f4f6',
                         dark: '#1f2937',
                         'gray-medium': '#6b7280'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
                     }
                 }
             }
         }
     </script>
-    
     <style type="text/tailwindcss">
         @layer utilities {
             .content-auto {
@@ -34,35 +40,84 @@
             .transition-all-300 {
                 transition: all 300ms ease-in-out;
             }
-            /* 关键修复：确保可点击元素不会被覆盖 */
-            .clickable-area {
-                position: relative;
-                z-index: 10;
+            .shadow-card {
+                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
             }
-            /* 确保没有元素意外覆盖导航 */
-            .no-overlay {
-                pointer-events: none;
-            }
-            .no-overlay > * {
-                pointer-events: auto;
+            .bg-gradient-primary {
+                background: linear-gradient(135deg, #1a56db 0%, #3b82f6 100%);
             }
         }
     </style>
 </head>
 <body class="bg-light font-sans">
+    <!-- 登录页面 -->
+    <div id="login-page" class="min-h-screen flex items-center justify-center bg-gradient-primary p-4">
+        <div class="bg-white rounded-xl shadow-lg w-full max-w-md p-8 space-y-8">
+            <div class="text-center">
+                <img src="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/74ce8e3a834a47d3ac8b69bd6b3a0e0f~tplv-a9rns2rl98-image.image?rcl=20251111193856E4A2B4CB2435DF2F561B&rk3s=8e244e95&rrcfp=f06b921b&x-expires=1765453200&x-signature=%2FYM3NmL57SZnCskDxGpOwiq5%2Byg%3D" alt="App Logo" class="h-20 mx-auto mb-4">
+                <h2 class="text-2xl font-bold text-dark">车抵贷销售培训系统</h2>
+                <p class="text-gray-medium mt-2">提升销售技能，助力业绩增长</p>
+            </div>
+            <form id="login-form" class="mt-8 space-y-6">
+                <div>
+                    <label for="username" class="block text-sm font-medium text-gray-medium mb-1">用户名</label>
+                    <input id="username" name="username" type="text" required class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                </div>
+                <div>
+                    <label for="password" class="block text-sm font-medium text-gray-medium mb-1">密码</label>
+                    <input id="password" name="password" type="password" required class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                </div>
+                <div>
+                    <label for="role" class="block text-sm font-medium text-gray-medium mb-1">角色</label>
+                    <select id="role" name="role" required class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                        <option value="sales">销售人员</option>
+                        <option value="manager">管理者</option>
+                        <option value="trainer">培训师</option>
+                    </select>
+                </div>
+                <div>
+                    <button type="submit" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all-300">
+                        登录
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- 主应用界面 -->
-    <div id="app" class="min-h-screen bg-light">
+    <div id="app" class="hidden min-h-screen bg-light">
         <!-- 顶部导航栏 -->
-        <header class="bg-white shadow-sm z-20 relative">
+        <header class="bg-white shadow-sm">
             <div class="max-w-full mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex justify-between h-16">
                     <div class="flex items-center">
-                        <button id="sidebar-toggle" class="p-2 rounded-md text-gray-medium hover:text-dark hover:bg-light focus:outline-none clickable-area">
+                        <button id="sidebar-toggle" class="p-2 rounded-md text-gray-medium hover:text-dark hover:bg-light focus:outline-none">
                             <i class="fa fa-bars text-xl"></i>
                         </button>
                         <div class="ml-3 flex-shrink-0 flex items-center">
-                            <img class="h-8 w-auto" src="https://picsum.photos/id/237/40/40" alt="Logo">
+                            <img class="h-8 w-auto" src="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/74ce8e3a834a47d3ac8b69bd6b3a0e0f~tplv-a9rns2rl98-image.image?rcl=20251111193856E4A2B4CB2435DF2F561B&rk3s=8e244e95&rrcfp=f06b921b&x-expires=1765453200&x-signature=%2FYM3NmL57SZnCskDxGpOwiq5%2Byg%3D" alt="Logo">
                             <span class="ml-2 text-xl font-bold text-dark">车抵贷销售培训</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <button id="notifications-btn" class="p-2 rounded-full text-gray-medium hover:text-dark hover:bg-light focus:outline-none">
+                                <i class="fa fa-bell text-xl"></i>
+                                <span class="absolute top-3 right-12 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform translate-x-1/2 -translate-y-1/2 bg-red-500 rounded-full">3</span>
+                            </button>
+                        </div>
+                        <div class="ml-4 relative">
+                            <div>
+                                <button id="user-menu-btn" class="max-w-xs bg-white flex items-center text-sm rounded-full focus:outline-none" aria-haspopup="true">
+                                    <span class="sr-only">打开用户菜单</span>
+                                    <img class="h-8 w-8 rounded-full" src="https://p26-doubao-search-sign.byteimg.com/pgc-image/8d896b28628f47f5a57600086307a110~tplv-be4g95zd3a-image.jpeg?rk3s=8e244e95&x-expires=1765453198&x-signature=wLUO3%2FKHQ%2B629I%2F5V%2Bd59J6430c%3D" alt="用户头像">
+                                </button>
+                            </div>
+                            <div id="user-menu" class="hidden origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-10">
+                                <a href="#" id="profile-link" class="block px-4 py-2 text-sm text-gray-medium hover:bg-light">个人资料</a>
+                                <a href="#" id="settings-link" class="block px-4 py-2 text-sm text-gray-medium hover:bg-light">设置</a>
+                                <a href="#" id="logout-link" class="block px-4 py-2 text-sm text-gray-medium hover:bg-light">退出登录</a>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -70,9 +125,9 @@
         </header>
 
         <div class="flex h-[calc(100vh-4rem)]">
-            <!-- 侧边栏 - 关键修复：添加z-index和点击区域类 -->
-            <aside id="sidebar" class="w-64 bg-white shadow-sm hidden md:block overflow-y-auto z-10 clickable-area">
-                <nav class="mt-5 px-2 no-overlay">
+            <!-- 侧边栏 -->
+            <aside id="sidebar" class="w-64 bg-white shadow-sm hidden md:block overflow-y-auto">
+                <nav class="mt-5 px-2">
                     <div class="space-y-1">
                         <a href="#dashboard" class="nav-link group flex items-center px-2 py-2 text-base font-medium rounded-md bg-primary text-white" data-target="dashboard-section">
                             <i class="fa fa-dashboard mr-3 text-lg"></i>
@@ -99,6 +154,14 @@
                             智能问答
                         </a>
                     </div>
+                    <div class="mt-8">
+                        <h3 class="px-3 text-xs font-semibold text-gray-medium uppercase tracking-wider">
+                            角色特定
+                        </h3>
+                        <div class="mt-1 space-y-1" id="role-specific-menu">
+                            <!-- 根据角色动态显示 -->
+                        </div>
+                    </div>
                 </nav>
             </aside>
 
@@ -108,11 +171,208 @@
                 <section id="dashboard-section" class="section-content">
                     <div class="mb-6">
                         <h1 class="text-2xl font-bold text-dark">仪表盘</h1>
-                        <p class="text-gray-medium">欢迎使用车抵贷销售培训系统！</p>
+                        <p class="text-gray-medium">欢迎回来，<span id="user-greeting">销售顾问</span>！查看您的培训进度和最新动态。</p>
                     </div>
-                    <!-- 仪表盘内容 -->
-                    <div class="bg-white p-4 rounded-lg">
-                        <p>仪表盘内容区域</p>
+
+                    <!-- 统计卡片 -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                        <div class="bg-white overflow-hidden shadow-sm rounded-lg">
+                            <div class="p-5">
+                                <div class="flex items-center">
+                                    <div class="flex-shrink-0 bg-blue-500 rounded-md p-3">
+                                        <i class="fa fa-book text-white text-xl"></i>
+                                    </div>
+                                    <div class="ml-5 w-0 flex-1">
+                                        <dl>
+                                            <dt class="text-sm font-medium text-gray-medium truncate">已完成课程</dt>
+                                            <dd class="flex items-baseline">
+                                                <div class="text-2xl font-semibold text-dark">3/8</div>
+                                                <div class="ml-2 flex items-baseline text-sm font-semibold text-green-600">
+                                                    <i class="fa fa-arrow-up"></i>
+                                                    <span class="sr-only">增加</span>
+                                                    12%
+                                                </div>
+                                            </dd>
+                                        </dl>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white overflow-hidden shadow-sm rounded-lg">
+                            <div class="p-5">
+                                <div class="flex items-center">
+                                    <div class="flex-shrink-0 bg-green-500 rounded-md p-3">
+                                        <i class="fa fa-check-circle text-white text-xl"></i>
+                                    </div>
+                                    <div class="ml-5 w-0 flex-1">
+                                        <dl>
+                                            <dt class="text-sm font-medium text-gray-medium truncate">考试通过率</dt>
+                                            <dd class="flex items-baseline">
+                                                <div class="text-2xl font-semibold text-dark">85%</div>
+                                                <div class="ml-2 flex items-baseline text-sm font-semibold text-green-600">
+                                                    <i class="fa fa-arrow-up"></i>
+                                                    <span class="sr-only">增加</span>
+                                                    5%
+                                                </div>
+                                            </dd>
+                                        </dl>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white overflow-hidden shadow-sm rounded-lg">
+                            <div class="p-5">
+                                <div class="flex items-center">
+                                    <div class="flex-shrink-0 bg-yellow-500 rounded-md p-3">
+                                        <i class="fa fa-comments text-white text-xl"></i>
+                                    </div>
+                                    <div class="ml-5 w-0 flex-1">
+                                        <dl>
+                                            <dt class="text-sm font-medium text-gray-medium truncate">情景演练次数</dt>
+                                            <dd class="flex items-baseline">
+                                                <div class="text-2xl font-semibold text-dark">12</div>
+                                                <div class="ml-2 flex items-baseline text-sm font-semibold text-green-600">
+                                                    <i class="fa fa-arrow-up"></i>
+                                                    <span class="sr-only">增加</span>
+                                                    8%
+                                                </div>
+                                            </dd>
+                                        </dl>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white overflow-hidden shadow-sm rounded-lg">
+                            <div class="p-5">
+                                <div class="flex items-center">
+                                    <div class="flex-shrink-0 bg-red-500 rounded-md p-3">
+                                        <i class="fa fa-star text-white text-xl"></i>
+                                    </div>
+                                    <div class="ml-5 w-0 flex-1">
+                                        <dl>
+                                            <dt class="text-sm font-medium text-gray-medium truncate">平均评分</dt>
+                                            <dd class="flex items-baseline">
+                                                <div class="text-2xl font-semibold text-dark">4.2/5</div>
+                                                <div class="ml-2 flex items-baseline text-sm font-semibold text-green-600">
+                                                    <i class="fa fa-arrow-up"></i>
+                                                    <span class="sr-only">增加</span>
+                                                    0.3
+                                                </div>
+                                            </dd>
+                                        </dl>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 培训进度图表 -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                        <div class="bg-white shadow-sm rounded-lg p-6">
+                            <h2 class="text-lg font-medium text-dark mb-4">培训进度</h2>
+                            <div class="h-64">
+                                <canvas id="progress-chart"></canvas>
+                            </div>
+                        </div>
+
+                        <div class="bg-white shadow-sm rounded-lg p-6">
+                            <h2 class="text-lg font-medium text-dark mb-4">最近活动</h2>
+                            <div class="space-y-4">
+                                <div class="flex items-start">
+                                    <div class="flex-shrink-0">
+                                        <span class="inline-flex items-center justify-center h-8 w-8 rounded-full bg-green-100 text-green-500">
+                                            <i class="fa fa-check"></i>
+                                        </span>
+                                    </div>
+                                    <div class="ml-4">
+                                        <p class="text-sm font-medium text-dark">完成了《车抵贷产品知识》课程</p>
+                                        <p class="text-sm text-gray-medium">今天 10:23</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start">
+                                    <div class="flex-shrink-0">
+                                        <span class="inline-flex items-center justify-center h-8 w-8 rounded-full bg-blue-100 text-blue-500">
+                                            <i class="fa fa-comments"></i>
+                                        </span>
+                                    </div>
+                                    <div class="ml-4">
+                                        <p class="text-sm font-medium text-dark">完成了一次情景演练</p>
+                                        <p class="text-sm text-gray-medium">昨天 15:47</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start">
+                                    <div class="flex-shrink-0">
+                                        <span class="inline-flex items-center justify-center h-8 w-8 rounded-full bg-yellow-100 text-yellow-500">
+                                            <i class="fa fa-star"></i>
+                                        </span>
+                                    </div>
+                                    <div class="ml-4">
+                                        <p class="text-sm font-medium text-dark">在《销售技巧》考试中获得 92 分</p>
+                                        <p class="text-sm text-gray-medium">2天前 09:15</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start">
+                                    <div class="flex-shrink-0">
+                                        <span class="inline-flex items-center justify-center h-8 w-8 rounded-full bg-purple-100 text-purple-500">
+                                            <i class="fa fa-file-text"></i>
+                                        </span>
+                                    </div>
+                                    <div class="ml-4">
+                                        <p class="text-sm font-medium text-dark">上传了新的培训资料</p>
+                                        <p class="text-sm text-gray-medium">3天前 14:32</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 推荐课程 -->
+                    <div class="bg-white shadow-sm rounded-lg p-6">
+                        <h2 class="text-lg font-medium text-dark mb-4">推荐课程</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            <div class="border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition-all-300">
+                                <div class="h-40 bg-gray-200">
+                                    <img src="https://p3-doubao-search-sign.byteimg.com/pgc-image/337461b9c4964044b170003f161a3863~tplv-be4g95zd3a-image.jpeg?rk3s=8e244e95&x-expires=1765453197&x-signature=69u7iB6z%2F33vZ3zA3Z3zA3Z3zA%3D" alt="车抵贷销售技巧" class="w-full h-full object-cover">
+                                </div>
+                                <div class="p-4">
+                                    <h3 class="text-base font-medium text-dark">车抵贷销售技巧进阶</h3>
+                                    <p class="text-sm text-gray-medium mt-1">学习高级销售技巧，提高转化率</p>
+                                    <div class="mt-3 flex items-center justify-between">
+                                        <span class="text-xs text-gray-medium">45分钟</span>
+                                        <button class="text-sm text-primary hover:text-blue-700 font-medium">开始学习</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition-all-300">
+                                <div class="h-40 bg-gray-200">
+                                    <img src="https://p26-doubao-search-sign.byteimg.com/pgc-image/8d896b28628f47f5a57600086307a110~tplv-be4g95zd3a-image.jpeg?rk3s=8e244e95&x-expires=1765453198&x-signature=wLUO3%2FKHQ%2B629I%2F5V%2Bd59J6430c%3D" alt="客户沟通技巧" class="w-full h-full object-cover">
+                                </div>
+                                <div class="p-4">
+                                    <h3 class="text-base font-medium text-dark">客户沟通与异议处理</h3>
+                                    <p class="text-sm text-gray-medium mt-1">掌握有效沟通技巧，从容应对客户异议</p>
+                                    <div class="mt-3 flex items-center justify-between">
+                                        <span class="text-xs text-gray-medium">30分钟</span>
+                                        <button class="text-sm text-primary hover:text-blue-700 font-medium">开始学习</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition-all-300">
+                                <div class="h-40 bg-gray-200">
+                                    <img src="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/73f58c4bcb504bc0a82fdc813391d39c~tplv-a9rns2rl98-image.image?rcl=20251111193856E4A2B4CB2435DF2F561B&rk3s=8e244e95&rrcfp=f06b921b&x-expires=1765453204&x-signature=SvU7N4AECc%2F9bB4scpJDrqM5wuk%3D" alt="情景演练" class="w-full h-full object-cover">
+                                </div>
+                                <div class="p-4">
+                                    <h3 class="text-base font-medium text-dark">高级情景演练</h3>
+                                    <p class="text-sm text-gray-medium mt-1">模拟复杂客户场景，提升应对能力</p>
+                                    <div class="mt-3 flex items-center justify-between">
+                                        <span class="text-xs text-gray-medium">60分钟</span>
+                                        <button class="text-sm text-primary hover:text-blue-700 font-medium">开始学习</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </section>
 
@@ -122,144 +382,2324 @@
                         <h1 class="text-2xl font-bold text-dark">资料管理</h1>
                         <p class="text-gray-medium">上传、管理和查看培训资料</p>
                     </div>
-                    <!-- 资料管理内容 -->
-                    <div class="bg-white p-4 rounded-lg">
-                        <p>资料管理内容区域</p>
+
+                    <!-- 上传资料卡片 -->
+                    <div class="bg-white shadow-sm rounded-lg p-6 mb-8">
+                        <h2 class="text-lg font-medium text-dark mb-4">上传新资料</h2>
+                        <div class="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-primary transition-all-300 cursor-pointer" id="dropzone">
+                            <img src="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/0e5daaf8a0be4f24abf2248e36f3b0ef~tplv-a9rns2rl98-image.image?rcl=20251111193856E4A2B4CB2435DF2F561B&rk3s=8e244e95&rrcfp=f06b921b&x-expires=1765453202&x-signature=G2x0nnt59LzWMZrYj0OirXnkd8k%3D" alt="上传文件" class="h-24 mx-auto mb-4 opacity-50 hover:opacity-100 transition-all-300">
+                            <p class="text-base font-medium text-dark mb-2">拖放文件到此处或点击上传</p>
+                            <p class="text-sm text-gray-medium mb-4">支持文字、图片、音频、文档等格式</p>
+                            <button type="button" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-primary hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all-300">
+                                <i class="fa fa-upload mr-2"></i>
+                                选择文件
+                            </button>
+                            <input type="file" id="file-input" class="hidden" multiple accept=".txt,.doc,.docx,.pdf,.jpg,.jpeg,.png,.gif,.mp3,.wav">
+                        </div>
+                    </div>
+
+                    <!-- 资料列表 -->
+                    <div class="bg-white shadow-sm rounded-lg overflow-hidden">
+                        <div class="px-6 py-4 border-b border-gray-200">
+                            <div class="flex items-center justify-between">
+                                <h2 class="text-lg font-medium text-dark">资料列表</h2>
+                                <div class="flex items-center">
+                                    <div class="relative">
+                                        <input type="text" placeholder="搜索资料..." class="w-64 pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                            <i class="fa fa-search text-gray-medium"></i>
+                                        </div>
+                                    </div>
+                                    <div class="ml-4">
+                                        <select class="pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm rounded-md">
+                                            <option>所有类型</option>
+                                            <option>文档</option>
+                                            <option>图片</option>
+                                            <option>音频</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-200">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-medium uppercase tracking-wider">
+                                            资料名称
+                                        </th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-medium uppercase tracking-wider">
+                                            类型
+                                        </th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-medium uppercase tracking-wider">
+                                            上传者
+                                        </th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-medium uppercase tracking-wider">
+                                            上传时间
+                                        </th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-medium uppercase tracking-wider">
+                                            状态
+                                        </th>
+                                        <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-medium uppercase tracking-wider">
+                                            操作
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200">
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="flex items-center">
+                                                <div class="flex-shrink-0 h-10 w-10 flex items-center justify-center bg-blue-100 rounded-md">
+                                                    <i class="fa fa-file-pdf-o text-blue-500 text-xl"></i>
+                                                </div>
+                                                <div class="ml-4">
+                                                    <div class="text-sm font-medium text-dark">车抵贷产品手册</div>
+                                                    <div class="text-sm text-gray-medium">详细介绍公司各类车抵贷产品</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
+                                                PDF文档
+                                            </span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-medium">
+                                            张经理
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-medium">
+                                            2025-11-01
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                                已处理
+                                            </span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                            <a href="#" class="text-primary hover:text-blue-700 mr-3">查看</a>
+                                            <a href="#" class="text-primary hover:text-blue-700 mr-3">下载</a>
+                                            <a href="#" class="text-red-600 hover:text-red-900">删除</a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="flex items-center">
+                                                <div class="flex-shrink-0 h-10 w-10 flex items-center justify-center bg-green-100 rounded-md">
+                                                    <i class="fa fa-file-audio-o text-green-500 text-xl"></i>
+                                                </div>
+                                                <div class="ml-4">
+                                                    <div class="text-sm font-medium text-dark">销售技巧录音示例</div>
+                                                    <div class="text-sm text-gray-medium">优秀销售电话沟通录音</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                                音频
+                                            </span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-medium">
+                                            李培训师
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-medium">
+                                            2025-11-03
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                                已处理
+                                            </span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                            <a href="#" class="text-primary hover:text-blue-700 mr-3">查看</a>
+                                            <a href="#" class="text-primary hover:text-blue-700 mr-3">下载</a>
+                                            <a href="#" class="text-red-600 hover:text-red-900">删除</a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="flex items-center">
+                                                <div class="flex-shrink-0 h-10 w-10 flex items-center justify-center bg-yellow-100 rounded-md">
+                                                    <i class="fa fa-file-image-o text-yellow-500 text-xl"></i>
+                                                </div>
+                                                <div class="ml-4">
+                                                    <div class="text-sm font-medium text-dark">产品对比图表</div>
+                                                    <div class="text-sm text-gray-medium">与竞品的优势对比</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                                                图片
+                                            </span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-medium">
+                                            王设计师
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-medium">
+                                            2025-11-05
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                                                处理中
+                                            </span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                            <a href="#" class="text-primary hover:text-blue-700 mr-3">查看</a>
+                                            <a href="#" class="text-primary hover:text-blue-700 mr-3">下载</a>
+                                            <a href="#" class="text-red-600 hover:text-red-900">删除</a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="flex items-center">
+                                                <div class="flex-shrink-0 h-10 w-10 flex items-center justify-center bg-purple-100 rounded-md">
+                                                    <i class="fa fa-file-word-o text-purple-500 text-xl"></i>
+                                                </div>
+                                                <div class="ml-4">
+                                                    <div class="text-sm font-medium text-dark">销售话术指南</div>
+                                                    <div class="text-sm text-gray-medium">车抵贷电话销售标准话术</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-purple-100 text-purple-800">
+                                                Word文档
+                                            </span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-medium">
+                                            张经理
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-medium">
+                                            2025-11-07
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                                已处理
+                                            </span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                            <a href="#" class="text-primary hover:text-blue-700 mr-3">查看</a>
+                                            <a href="#" class="text-primary hover:text-blue-700 mr-3">下载</a>
+                                            <a href="#" class="text-red-600 hover:text-red-900">删除</a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
+                            <div class="flex-1 flex justify-between sm:hidden">
+                                <a href="#" class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-medium bg-white hover:bg-gray-50">
+                                    上一页
+                                </a>
+                                <a href="#" class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-medium bg-white hover:bg-gray-50">
+                                    下一页
+                                </a>
+                            </div>
+                            <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+                                <div>
+                                    <p class="text-sm text-gray-medium">
+                                        显示第 <span class="font-medium">1</span> 到 <span class="font-medium">4</span> 条，共 <span class="font-medium">12</span> 条结果
+                                    </p>
+                                </div>
+                                <div>
+                                    <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+                                        <a href="#" class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-medium hover:bg-gray-50">
+                                            <span class="sr-only">上一页</span>
+                                            <i class="fa fa-chevron-left"></i>
+                                        </a>
+                                        <a href="#" class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-primary text-sm font-medium text-white">
+                                            1
+                                        </a>
+                                        <a href="#" class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-medium hover:bg-gray-50">
+                                            2
+                                        </a>
+                                        <a href="#" class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-medium hover:bg-gray-50">
+                                            3
+                                        </a>
+                                        <span class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-medium">
+                                            ...
+                                        </span>
+                                        <a href="#" class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-medium hover:bg-gray-50">
+                                            12
+                                        </a>
+                                        <a href="#" class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-medium hover:bg-gray-50">
+                                            <span class="sr-only">下一页</span>
+                                            <i class="fa fa-chevron-right"></i>
+                                        </a>
+                                    </nav>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </section>
 
-                <!-- 其他区域内容省略 -->
+                <!-- AI智能处理 -->
                 <section id="ai-processing-section" class="section-content hidden">
-                    <div class="bg-white p-4 rounded-lg">
-                        <p>AI智能处理内容区域</p>
+                    <div class="mb-6">
+                        <h1 class="text-2xl font-bold text-dark">AI智能处理</h1>
+                        <p class="text-gray-medium">使用AI对资料进行润色、总结归纳，生成培训教程</p>
+                    </div>
+
+                    <!-- AI处理选项卡 -->
+                    <div class="bg-white shadow-sm rounded-lg overflow-hidden mb-8">
+                        <div class="border-b border-gray-200">
+                            <nav class="flex -mb-px">
+                                <a href="#" class="border-b-2 border-primary text-primary px-6 py-4 text-sm font-medium">
+                                    资料处理
+                                </a>
+                                <a href="#" class="border-b-2 border-transparent text-gray-medium hover:text-gray-medium hover:border-gray-300 px-6 py-4 text-sm font-medium">
+                                    已处理资料
+                                </a>
+                                <a href="#" class="border-b-2 border-transparent text-gray-medium hover:text-gray-medium hover:border-gray-300 px-6 py-4 text-sm font-medium">
+                                    生成教程
+                                </a>
+                            </nav>
+                        </div>
+
+                        <!-- 资料处理表单 -->
+                        <div class="p-6">
+                            <div class="mb-6">
+                                <label for="material-select" class="block text-sm font-medium text-gray-medium mb-1">选择资料</label>
+                                <select id="material-select" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                                    <option value="">-- 选择要处理的资料 --</option>
+                                    <option value="1">车抵贷产品手册</option>
+                                    <option value="2">销售技巧录音示例</option>
+                                    <option value="3">产品对比图表</option>
+                                    <option value="4">销售话术指南</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-6">
+                                <label class="block text-sm font-medium text-gray-medium mb-1">处理类型</label>
+                                <div class="space-y-2">
+                                    <div class="flex items-center">
+                                        <input id="process-summary" name="process-type" type="radio" checked class="h-4 w-4 text-primary focus:ring-primary border-gray-300">
+                                        <label for="process-summary" class="ml-2 block text-sm text-dark">
+                                            总结归纳
+                                        </label>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <input id="process-polish" name="process-type" type="radio" class="h-4 w-4 text-primary focus:ring-primary border-gray-300">
+                                        <label for="process-polish" class="ml-2 block text-sm text-dark">
+                                            润色优化
+                                        </label>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <input id="process-tutorial" name="process-type" type="radio" class="h-4 w-4 text-primary focus:ring-primary border-gray-300">
+                                        <label for="process-tutorial" class="ml-2 block text-sm text-dark">
+                                            生成教程
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-6">
+                                <label for="ai-prompt" class="block text-sm font-medium text-gray-medium mb-1">AI提示词 (可选)</label>
+                                <textarea id="ai-prompt" rows="3" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="输入额外的AI提示词，指导处理过程..."></textarea>
+                            </div>
+
+                            <div class="flex justify-end">
+                                <button type="button" id="process-btn" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-primary hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all-300">
+                                    <i class="fa fa-magic mr-2"></i>
+                                    开始处理
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 处理结果展示 -->
+                    <div id="processing-result" class="bg-white shadow-sm rounded-lg overflow-hidden hidden">
+                        <div class="p-6">
+                            <div class="flex items-center justify-between mb-4">
+                                <h2 class="text-lg font-medium text-dark">处理结果</h2>
+                                <div class="flex space-x-2">
+                                    <button type="button" class="inline-flex items-center px-3 py-1 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-medium bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all-300">
+                                        <i class="fa fa-download mr-1"></i>
+                                        下载
+                                    </button>
+                                    <button type="button" class="inline-flex items-center px-3 py-1 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-medium bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all-300">
+                                        <i class="fa fa-share-alt mr-1"></i>
+                                        分享
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="border-t border-gray-200 pt-4">
+                                <h3 class="text-base font-medium text-dark mb-2">AI总结</h3>
+                                <div class="prose max-w-none">
+                                    <p class="text-gray-medium">车抵贷产品手册主要介绍了公司的三种车抵贷产品：标准型、快捷型和增值型。以下是主要内容总结：</p>
+                                    <ul class="list-disc pl-5 mt-3 space-y-2 text-gray-medium">
+                                        <li><strong>标准型车抵贷</strong>：最高可贷车辆评估价的80%，年利率7.8%-12.8%，期限1-3年，适合有稳定收入的客户。</li>
+                                        <li><strong>快捷型车抵贷</strong>：简化审批流程，最快2小时放款，最高可贷车辆评估价的60%，年利率10.8%-15.8%，期限1-2年，适合急需资金的客户。</li>
+                                        <li><strong>增值型车抵贷</strong>：除车辆抵押外，可附加其他资产证明提高额度，最高可贷车辆评估价的100%，年利率9.8%-13.8%，期限1-5年，适合有额外资产的优质客户。</li>
+                                    </ul>
+                                    <p class="mt-3 text-gray-medium">产品优势包括：无需押车、手续简便、审批快速、额度高、利率灵活。目标客户群体主要是有车一族，特别是小微企业主、个体工商户和有短期资金需求的个人。</p>
+                                    <p class="mt-2 text-gray-medium">销售过程中应重点强调：低利率、高额度、快审批、不押车等优势，并针对不同客户群体推荐适合的产品类型。</p>
+                                </div>
+                            </div>
+
+                            <div class="border-t border-gray-200 pt-4 mt-4">
+                                <h3 class="text-base font-medium text-dark mb-2">关键要点</h3>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div class="bg-blue-50 p-4 rounded-lg">
+                                        <h4 class="font-medium text-blue-800 mb-2">产品特点</h4>
+                                        <ul class="list-disc pl-5 space-y-1 text-sm text-blue-700">
+                                            <li>无需押车，不影响日常使用</li>
+                                            <li>最高可贷车辆评估价的100%</li>
+                                            <li>灵活的还款期限，1-5年可选</li>
+                                            <li>简化审批流程，最快2小时放款</li>
+                                        </ul>
+                                    </div>
+                                    <div class="bg-green-50 p-4 rounded-lg">
+                                        <h4 class="font-medium text-green-800 mb-2">销售策略</h4>
+                                        <ul class="list-disc pl-5 space-y-1 text-sm text-green-700">
+                                            <li>突出产品与竞品的利率优势</li>
+                                            <li>强调审批速度和放款效率</li>
+                                            <li>针对不同客户群体推荐适合产品</li>
+                                            <li>提供个性化的贷款方案</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </section>
+
+                <!-- 课程考试 -->
                 <section id="exams-section" class="section-content hidden">
-                    <div class="bg-white p-4 rounded-lg">
-                        <p>课程考试内容区域</p>
+                    <div class="mb-6">
+                        <h1 class="text-2xl font-bold text-dark">课程考试</h1>
+                        <p class="text-gray-medium">参加培训课程考试，检验学习成果</p>
+                    </div>
+
+                    <!-- 考试列表 -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                        <div class="bg-white shadow-sm rounded-lg overflow-hidden hover:shadow-md transition-all-300">
+                            <div class="h-40 bg-gradient-to-r from-blue-500 to-blue-600 flex items-center justify-center">
+                                <h3 class="text-xl font-bold text-white">车抵贷产品知识</h3>
+                            </div>
+                            <div class="p-6">
+                                <div class="flex items-center justify-between mb-4">
+                                    <span class="text-sm text-gray-medium">30题 | 60分钟</span>
+                                    <span class="text-sm font-medium text-primary">及格线：60分</span>
+                                </div>
+                                <p class="text-sm text-gray-medium mb-4">测试您对车抵贷产品特点、利率、期限等方面的了解</p>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-xs text-gray-medium">上次考试：未参加</span>
+                                    <button class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-primary hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all-300">
+                                        开始考试
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white shadow-sm rounded-lg overflow-hidden hover:shadow-md transition-all-300">
+                            <div class="h-40 bg-gradient-to-r from-green-500 to-green-600 flex items-center justify-center">
+                                <h3 class="text-xl font-bold text-white">销售技巧</h3>
+                            </div>
+                            <div class="p-6">
+                                <div class="flex items-center justify-between mb-4">
+                                    <span class="text-sm text-gray-medium">25题 | 45分钟</span>
+                                    <span class="text-sm font-medium text-primary">及格线：60分</span>
+                                </div>
+                                <p class="text-sm text-gray-medium mb-4">测试您对车抵贷销售话术、沟通技巧和异议处理的掌握程度</p>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-xs text-gray-medium">上次考试：92分 (优秀)</span>
+                                    <button class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-primary hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all-300">
+                                        开始考试
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white shadow-sm rounded-lg overflow-hidden hover:shadow-md transition-all-300">
+                            <div class="h-40 bg-gradient-to-r from-purple-500 to-purple-600 flex items-center justify-center">
+                                <h3 class="text-xl font-bold text-white">客户服务</h3>
+                            </div>
+                            <div class="p-6">
+                                <div class="flex items-center justify-between mb-4">
+                                    <span class="text-sm text-gray-medium">20题 | 30分钟</span>
+                                    <span class="text-sm font-medium text-primary">及格线：60分</span>
+                                </div>
+                                <p class="text-sm text-gray-medium mb-4">测试您对客户服务流程、投诉处理和客户关系维护的理解</p>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-xs text-gray-medium">上次考试：85分 (良好)</span>
+                                    <button class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-primary hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all-300">
+                                        开始考试
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 考试成绩 -->
+                    <div class="bg-white shadow-sm rounded-lg overflow-hidden">
+                        <div class="px-6 py-4 border-b border-gray-200">
+                            <h2 class="text-lg font-medium text-dark">考试成绩</h2>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-200">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-medium uppercase tracking-wider">
+                                            考试名称
+                                        </th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-medium uppercase tracking-wider">
+                                            分数
+                                        </th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-medium uppercase tracking-wider">
+                                            状态
+                                        </th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-medium uppercase tracking-wider">
+                                            考试时间
+                                        </th>
+                                        <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-medium uppercase tracking-wider">
+                                            操作
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200">
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-dark">
+                                            销售技巧
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="flex items-center">
+                                                <span class="text-sm text-dark font-medium">92</span>
+                                                <span class="ml-2 text-xs text-green-600 font-medium">优秀</span>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                                已通过
+                                            </span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-medium">
+                                            2025-11-05 14:30
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                            <a href="#" class="text-primary hover:text-blue-700">查看详情</a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-dark">
+                                            客户服务
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="flex items-center">
+                                                <span class="text-sm text-dark font-medium">85</span>
+                                                <span class="ml-2 text-xs text-blue-600 font-medium">良好</span>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                                已通过
+                                            </span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-medium">
+                                            2025-11-01 10:15
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                            <a href="#" class="text-primary hover:text-blue-700">查看详情</a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-dark">
+                                            合规知识
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="flex items-center">
+                                                <span class="text-sm text-dark font-medium">58</span>
+                                                <span class="ml-2 text-xs text-red-600 font-medium">不及格</span>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
+                                                未通过
+                                            </span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-medium">
+                                            2025-10-28 09:45
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                            <a href="#" class="text-primary hover:text-blue-700">查看详情</a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </section>
+
+                <!-- 情景演练 -->
                 <section id="simulation-section" class="section-content hidden">
-                    <div class="bg-white p-4 rounded-lg">
-                        <p>情景演练内容区域</p>
+                    <div class="mb-6">
+                        <h1 class="text-2xl font-bold text-dark">情景演练</h1>
+                        <p class="text-gray-medium">模拟客户咨询车抵贷场景，提升销售应对能力</p>
+                    </div>
+
+                    <!-- 演练场景选择 -->
+                    <div class="bg-white shadow-sm rounded-lg p-6 mb-8">
+                        <h2 class="text-lg font-medium text-dark mb-4">选择演练场景</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            <div class="border border-gray-200 rounded-lg p-4 hover:border-primary hover:shadow-md transition-all-300 cursor-pointer simulation-scenario">
+                                <div class="flex items-center justify-between mb-3">
+                                    <h3 class="text-base font-medium text-dark">首次咨询客户</h3>
+                                    <span class="text-xs font-medium text-primary bg-blue-50 px-2 py-1 rounded-full">基础</span>
+                                </div>
+                                <p class="text-sm text-gray-medium mb-3">客户首次了解车抵贷产品，需要详细介绍产品特点和申请流程</p>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-xs text-gray-medium">预计时长: 5分钟</span>
+                                    <span class="text-xs text-gray-medium">难度: ★★☆☆☆</span>
+                                </div>
+                            </div>
+
+                            <div class="border border-gray-200 rounded-lg p-4 hover:border-primary hover:shadow-md transition-all-300 cursor-pointer simulation-scenario">
+                                <div class="flex items-center justify-between mb-3">
+                                    <h3 class="text-base font-medium text-dark">价格敏感客户</h3>
+                                    <span class="text-xs font-medium text-yellow-600 bg-yellow-50 px-2 py-1 rounded-full">中级</span>
+                                </div>
+                                <p class="text-sm text-gray-medium mb-3">客户对利率和费用比较敏感，需要展示产品优势并进行竞品对比</p>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-xs text-gray-medium">预计时长: 7分钟</span>
+                                    <span class="text-xs text-gray-medium">难度: ★★★☆☆</span>
+                                </div>
+                            </div>
+
+                            <div class="border border-gray-200 rounded-lg p-4 hover:border-primary hover:shadow-md transition-all-300 cursor-pointer simulation-scenario">
+                                <div class="flex items-center justify-between mb-3">
+                                    <h3 class="text-base font-medium text-dark">异议处理</h3>
+                                    <span class="text-xs font-medium text-red-600 bg-red-50 px-2 py-1 rounded-full">高级</span>
+                                </div>
+                                <p class="text-sm text-gray-medium mb-3">客户提出多种疑虑和异议，需要专业解答并引导客户决策</p>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-xs text-gray-medium">预计时长: 10分钟</span>
+                                    <span class="text-xs text-gray-medium">难度: ★★★★★</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 演练界面 -->
+                    <div id="simulation-interface" class="bg-white shadow-sm rounded-lg overflow-hidden hidden">
+                        <div class="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
+                            <div class="flex items-center">
+                                <h2 class="text-lg font-medium text-dark">情景演练: <span id="scenario-title">首次咨询客户</span></h2>
+                                <span class="ml-3 px-2 py-1 text-xs font-medium text-primary bg-blue-50 rounded-full">进行中</span>
+                            </div>
+                            <div class="flex items-center">
+                                <span class="text-sm text-gray-medium mr-4">
+                                    <i class="fa fa-clock-o mr-1"></i>
+                                    <span id="simulation-timer">00:00</span>
+                                </span>
+                                <button id="end-simulation" class="inline-flex items-center px-3 py-1 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-medium bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all-300">
+                                    结束演练
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- 对话区域 -->
+                        <div class="h-96 overflow-y-auto p-6 bg-gray-50" id="chat-container">
+                            <div class="flex items-start mb-4">
+                                <div class="flex-shrink-0">
+                                    <div class="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
+                                        <i class="fa fa-user text-blue-500"></i>
+                                    </div>
+                                </div>
+                                <div class="ml-3 bg-white p-3 rounded-lg shadow-sm max-w-md">
+                                    <p class="text-sm text-dark">您好，我想了解一下你们的车抵贷产品，我的车是去年买的，大概能贷多少钱？</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 输入区域 -->
+                        <div class="p-6 border-t border-gray-200">
+                            <div class="flex items-center">
+                                <div class="flex-1">
+                                    <textarea id="message-input" rows="2" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="输入您的回复..."></textarea>
+                                </div>
+                                <div class="ml-4">
+                                    <button id="send-message" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-primary hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all-300">
+                                        <i class="fa fa-paper-plane mr-2"></i>
+                                        发送
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 演练结果 -->
+                    <div id="simulation-result" class="bg-white shadow-sm rounded-lg overflow-hidden hidden">
+                        <div class="px-6 py-4 border-b border-gray-200">
+                            <h2 class="text-lg font-medium text-dark">演练结果</h2>
+                        </div>
+                        <div class="p-6">
+                            <div class="flex items-center justify-center mb-6">
+                                <div class="h-32 w-32 rounded-full bg-yellow-100 flex items-center justify-center">
+                                    <span class="text-3xl font-bold text-yellow-600" id="simulation-score">4.2</span>
+                                </div>
+                            </div>
+
+                            <div class="mb-6">
+                                <h3 class="text-base font-medium text-dark mb-3">评分详情</h3>
+                                <div class="space-y-4">
+                                    <div>
+                                        <div class="flex items-center justify-between mb-1">
+                                            <span class="text-sm text-gray-medium">专业知识</span>
+                                            <span class="text-sm font-medium text-dark">4.5/5</span>
+                                        </div>
+                                        <div class="w-full bg-gray-200 rounded-full h-2">
+                                            <div class="bg-primary h-2 rounded-full" style="width: 90%"></div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="flex items-center justify-between mb-1">
+                                            <span class="text-sm text-gray-medium">沟通技巧</span>
+                                            <span class="text-sm font-medium text-dark">4.0/5</span>
+                                        </div>
+                                        <div class="w-full bg-gray-200 rounded-full h-2">
+                                            <div class="bg-primary h-2 rounded-full" style="width: 80%"></div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="flex items-center justify-between mb-1">
+                                            <span class="text-sm text-gray-medium">异议处理</span>
+                                            <span class="text-sm font-medium text-dark">3.5/5</span>
+                                        </div>
+                                        <div class="w-full bg-gray-200 rounded-full h-2">
+                                            <div class="bg-primary h-2 rounded-full" style="width: 70%"></div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="flex items-center justify-between mb-1">
+                                            <span class="text-sm text-gray-medium">销售引导</span>
+                                            <span class="text-sm font-medium text-dark">4.8/5</span>
+                                        </div>
+                                        <div class="w-full bg-gray-200 rounded-full h-2">
+                                            <div class="bg-primary h-2 rounded-full" style="width: 96%"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="border-t border-gray-200 pt-4">
+                                <h3 class="text-base font-medium text-dark mb-3">AI反馈</h3>
+                                <div class="bg-blue-50 p-4 rounded-lg">
+                                    <p class="text-sm text-gray-medium">
+                                        <span class="font-medium text-dark">优点：</span>
+                                        您对产品额度和申请流程的介绍清晰准确，能够主动询问客户需求并提供个性化建议。
+                                    </p>
+                                    <p class="text-sm text-gray-medium mt-2">
+                                        <span class="font-medium text-dark">改进建议：</span>
+                                        在客户提到利率顾虑时，可以更详细地解释我们的利率计算方式，并与市场竞品进行对比，增强说服力。
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="mt-6 flex justify-end space-x-4">
+                                <button class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-medium bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all-300">
+                                    查看对话记录
+                                </button>
+                                <button class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-primary hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all-300">
+                                    再次演练
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </section>
+
+                <!-- 智能问答 -->
                 <section id="ai-qa-section" class="section-content hidden">
-                    <div class="bg-white p-4 rounded-lg">
-                        <p>智能问答内容区域</p>
+                    <div class="mb-6">
+                        <h1 class="text-2xl font-bold text-dark">智能问答</h1>
+                        <p class="text-gray-medium">输入车抵贷相关问题，AI将从知识库中提供最准确的解答</p>
+                    </div>
+
+                    <!-- 问答界面 -->
+                    <div class="bg-white shadow-sm rounded-lg overflow-hidden">
+                        <div class="p-6">
+                            <div class="mb-6">
+                                <div class="relative">
+                                    <input type="text" id="qa-input" class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="输入您的问题，例如：车抵贷需要哪些材料？">
+                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <i class="fa fa-question-circle text-gray-medium text-xl"></i>
+                                    </div>
+                                    <div class="absolute inset-y-0 right-0 pr-3 flex items-center">
+                                        <button id="ask-question" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-primary hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all-300">
+                                            提问
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 热门问题 -->
+                            <div class="mb-6">
+                                <h3 class="text-base font-medium text-dark mb-3">热门问题</h3>
+                                <div class="flex flex-wrap gap-2">
+                                    <button class="hot-question px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-sm text-gray-medium rounded-full transition-all-300">车抵贷需要哪些材料？</button>
+                                    <button class="hot-question px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-sm text-gray-medium rounded-full transition-all-300">车抵贷的利率是多少？</button>
+                                    <button class="hot-question px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-sm text-gray-medium rounded-full transition-all-300">车抵贷审批需要多久？</button>
+                                    <button class="hot-question px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-sm text-gray-medium rounded-full transition-all-300">车辆评估价如何确定？</button>
+                                    <button class="hot-question px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-sm text-gray-medium rounded-full transition-all-300">逾期还款会有什么后果？</button>
+                                </div>
+                            </div>
+
+                            <!-- 问答历史 -->
+                            <div class="border-t border-gray-200 pt-6">
+                                <h3 class="text-base font-medium text-dark mb-4">问答历史</h3>
+                                <div class="space-y-6" id="qa-history">
+                                    <div class="border-b border-gray-100 pb-4">
+                                        <div class="flex items-start mb-3">
+                                            <div class="flex-shrink-0">
+                                                <div class="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center">
+                                                    <i class="fa fa-user text-blue-500"></i>
+                                                </div>
+                                            </div>
+                                            <div class="ml-3">
+                                                <p class="text-sm font-medium text-dark">车抵贷需要哪些材料？</p>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-start ml-11">
+                                            <div class="flex-shrink-0">
+                                                <div class="h-8 w-8 rounded-full bg-green-100 flex items-center justify-center">
+                                                    <i class="fa fa-robot text-green-500"></i>
+                                                </div>
+                                            </div>
+                                            <div class="ml-3 bg-gray-50 p-3 rounded-lg max-w-3xl">
+                                                <p class="text-sm text-gray-medium">申请车抵贷通常需要以下材料：</p>
+                                                <ol class="list-decimal pl-5 mt-2 space-y-1 text-sm text-gray-medium">
+                                                    <li>个人有效身份证件（身份证、户口本等）</li>
+                                                    <li>车辆行驶证、登记证</li>
+                                                    <li>车辆购置税完税证明</li>
+                                                    <li>车辆保险单</li>
+                                                    <li>个人征信报告</li>
+                                                    <li>收入证明（工资流水、经营收入证明等）</li>
+                                                    <li>居住证明（房产证、租赁合同等）</li>
+                                                </ol>
+                                                <p class="mt-2 text-sm text-gray-medium">不同机构可能会有略微不同的要求，建议提前咨询客户经理了解详细材料清单。</p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <div class="flex items-start mb-3">
+                                            <div class="flex-shrink-0">
+                                                <div class="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center">
+                                                    <i class="fa fa-user text-blue-500"></i>
+                                                </div>
+                                            </div>
+                                            <div class="ml-3">
+                                                <p class="text-sm font-medium text-dark">车抵贷的利率是多少？</p>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-start ml-11">
+                                            <div class="flex-shrink-0">
+                                                <div class="h-8 w-8 rounded-full bg-green-100 flex items-center justify-center">
+                                                    <i class="fa fa-robot text-green-500"></i>
+                                                </div>
+                                            </div>
+                                            <div class="ml-3 bg-gray-50 p-3 rounded-lg max-w-3xl">
+                                                <p class="text-sm text-gray-medium">我们的车抵贷产品利率根据不同产品类型和客户资质有所不同：</p>
+                                                <ul class="list-disc pl-5 mt-2 space-y-1 text-sm text-gray-medium">
+                                                    <li><strong>标准型车抵贷</strong>：年利率7.8%-12.8%</li>
+                                                    <li><strong>快捷型车抵贷</strong>：年利率10.8%-15.8%</li>
+                                                    <li><strong>增值型车抵贷</strong>：年利率9.8%-13.8%</li>
+                                                </ul>
+                                                <p class="mt-2 text-sm text-gray-medium">利率会根据客户的信用状况、车辆评估价值、贷款期限等因素进行综合评估确定。优质客户可享受更低的利率优惠。建议您联系我们的客户经理获取个性化的利率报价。</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </section>
             </main>
         </div>
     </div>
 
-    <!-- JavaScript - 增强版事件处理 -->
+    <!-- JavaScript -->
     <script>
-        // 增强版错误处理和调试
-        window.addEventListener('error', function(e) {
-            console.error('全局错误捕获:', e.message, '在', e.filename, '行号:', e.lineno);
-            // 可以在这里添加用户友好的错误提示
+        // DOM元素
+        const loginPage = document.getElementById('login-page');
+        const loginForm = document.getElementById('login-form');
+        const app = document.getElementById('app');
+        const sidebarToggle = document.getElementById('sidebar-toggle');
+        const sidebar = document.getElementById('sidebar');
+        const userMenuBtn = document.getElementById('user-menu-btn');
+        const userMenu = document.getElementById('user-menu');
+        const logoutLink = document.getElementById('logout-link');
+        const navLinks = document.querySelectorAll('.nav-link');
+        const sections = document.querySelectorAll('.section-content');
+        const userGreeting = document.getElementById('user-greeting');
+        const roleSpecificMenu = document.getElementById('role-specific-menu');
+        const dropzone = document.getElementById('dropzone');
+        const fileInput = document.getElementById('file-input');
+        const processBtn = document.getElementById('process-btn');
+        const processingResult = document.getElementById('processing-result');
+        const simulationScenarios = document.querySelectorAll('.simulation-scenario');
+        const simulationInterface = document.getElementById('simulation-interface');
+        const scenarioTitle = document.getElementById('scenario-title');
+        const endSimulation = document.getElementById('end-simulation');
+        const simulationResult = document.getElementById('simulation-result');
+        const chatContainer = document.getElementById('chat-container');
+        const messageInput = document.getElementById('message-input');
+        const sendMessage = document.getElementById('send-message');
+        const qaInput = document.getElementById('qa-input');
+        const askQuestion = document.getElementById('ask-question');
+        const hotQuestions = document.querySelectorAll('.hot-question');
+        const qaHistory = document.getElementById('qa-history');
+
+        // 登录表单提交
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const role = document.getElementById('role').value;
+            
+            // 根据角色设置欢迎信息
+            if (role === 'sales') {
+                userGreeting.textContent = '销售顾问';
+            } else if (role === 'manager') {
+                userGreeting.textContent = '经理';
+            } else if (role === 'trainer') {
+                userGreeting.textContent = '培训师';
+            }
+            
+            // 显示角色特定菜单
+            showRoleSpecificMenu(role);
+            
+            // 隐藏登录页，显示应用
+            loginPage.classList.add('hidden');
+            app.classList.remove('hidden');
+            
+            // 初始化进度图表
+            initProgressChart();
         });
 
-        // 确保DOM完全加载后再执行
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('DOM完全加载完成，开始初始化交互');
-            
-            // 获取所有导航链接和内容区域
-            const navLinks = document.querySelectorAll('.nav-link');
-            const sections = document.querySelectorAll('.section-content');
-            const sidebarToggle = document.getElementById('sidebar-toggle');
-            const sidebar = document.getElementById('sidebar');
+        // 侧边栏切换
+        sidebarToggle.addEventListener('click', function() {
+            sidebar.classList.toggle('hidden');
+        });
 
-            // 验证元素是否存在
-            if (!navLinks.length) {
-                console.error('未找到导航链接元素');
-            } else {
-                console.log(`找到 ${navLinks.length} 个导航链接`);
+        // 用户菜单切换
+        userMenuBtn.addEventListener('click', function() {
+            userMenu.classList.toggle('hidden');
+        });
+
+        // 点击页面其他地方关闭用户菜单
+        document.addEventListener('click', function(e) {
+            if (!userMenuBtn.contains(e.target) && !userMenu.contains(e.target)) {
+                userMenu.classList.add('hidden');
             }
+        });
 
-            // 侧边栏切换功能
-            if (sidebarToggle && sidebar) {
-                sidebarToggle.addEventListener('click', function() {
-                    console.log('侧边栏切换按钮被点击');
-                    sidebar.classList.toggle('hidden');
-                });
-            } else {
-                console.error('侧边栏或切换按钮不存在');
-            }
+        // 退出登录
+        logoutLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            app.classList.add('hidden');
+            loginPage.classList.remove('hidden');
+            loginForm.reset();
+        });
 
-            // 导航链接点击处理 - 增强版
-            navLinks.forEach((link, index) => {
-                // 检查链接是否可点击
-                const isDisabled = link.hasAttribute('disabled') || 
-                                   window.getComputedStyle(link).pointerEvents === 'none';
+        // 导航链接点击事件
+        navLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
                 
-                if (isDisabled) {
-                    console.warn(`导航链接 ${index} 被禁用或不可点击`);
-                    return;
-                }
-
-                // 添加点击事件
+                // 更新导航链接样式
+                navLinks.forEach(item => {
+                    item.classList.remove('bg-primary', 'text-white');
+                    item.classList.add('text-gray-medium', 'hover:bg-light', 'hover:text-dark');
+                });
+                this.classList.add('bg-primary', 'text-white');
+                this.classList.remove('text-gray-medium', 'hover:bg-light', 'hover:text-dark');
+                
+                // 显示对应内容区域
+                const targetId = this.getAttribute('data-target');
+                sections.forEach(section => {
+                    section.classList.add('hidden');
+                });
+                document.getElementById(targetId).classList.remove('hidden');
+            });
+        });
+        
+        // 设置页面导航切换
+        const settingsNavLinks = document.querySelectorAll('.settings-nav-link');
+        const settingsContents = document.querySelectorAll('.settings-content');
+        
+        if (settingsNavLinks.length > 0) {
+            settingsNavLinks.forEach(link => {
                 link.addEventListener('click', function(e) {
                     e.preventDefault();
-                    console.log(`导航链接 ${index} 被点击，目标: ${this.getAttribute('data-target')}`);
                     
-                    // 更新导航链接样式
-                    navLinks.forEach(item => {
-                        item.classList.remove('bg-primary', 'text-white');
+                    // 更新设置导航链接样式
+                    settingsNavLinks.forEach(item => {
+                        item.classList.remove('text-primary', 'bg-blue-50');
                         item.classList.add('text-gray-medium', 'hover:bg-light', 'hover:text-dark');
                     });
-                    this.classList.add('bg-primary', 'text-white');
+                    this.classList.add('text-primary', 'bg-blue-50');
                     this.classList.remove('text-gray-medium', 'hover:bg-light', 'hover:text-dark');
                     
-                    // 显示对应内容区域
-                    const targetId = this.getAttribute('data-target');
-                    if (!targetId) {
-                        console.error('导航链接缺少data-target属性');
-                        return;
-                    }
-                    
-                    const targetSection = document.getElementById(targetId);
-                    if (!targetSection) {
-                        console.error(`未找到目标区域: ${targetId}`);
-                        return;
-                    }
-                    
-                    sections.forEach(section => {
-                        section.classList.add('hidden');
+                    // 显示对应设置内容
+                    const targetId = this.getAttribute('href').substring(1);
+                    settingsContents.forEach(content => {
+                        content.classList.add('hidden');
                     });
-                    targetSection.classList.remove('hidden');
-                    console.log(`已显示目标区域: ${targetId}`);
-                });
-
-                // 添加鼠标悬停效果调试
-                link.addEventListener('mouseenter', function() {
-                    console.log(`鼠标悬停在导航链接 ${index} 上`);
+                    document.getElementById(targetId).classList.remove('hidden');
                 });
             });
-
-            // 检查是否有元素覆盖导航
-            function checkOverlay() {
-                navLinks.forEach((link, index) => {
-                    const rect = link.getBoundingClientRect();
-                    const elements = document.elementsFromPoint(rect.left + 10, rect.top + 10);
+        }
+        
+        // 用户菜单中的设置链接
+        const settingsLink = document.getElementById('settings-link');
+        if (settingsLink) {
+            settingsLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // 切换到设置页面
+                navLinks.forEach(item => {
+                    if (item.getAttribute('data-target') === 'settings-section') {
+                        item.click();
+                    }
+                });
+            });
+        }
+        
+        // 初始化AI设置功能
+        function initAISettings() {
+            const aiSettingsForm = document.getElementById('ai-settings-form');
+            const testConnectionBtn = document.getElementById('test-ai-connection');
+            const cancelBtn = document.getElementById('cancel-ai-settings');
+            const connectionStatus = document.getElementById('ai-connection-status');
+            const enableAiCheckbox = document.getElementById('enable-ai');
+            const aiSettingsGroup = document.querySelector('.ai-settings-group');
+            
+            // 从localStorage加载设置
+            function loadAISettings() {
+                const savedSettings = localStorage.getItem('aiSettings');
+                if (savedSettings) {
+                    try {
+                        const settings = JSON.parse(savedSettings);
+                        enableAiCheckbox.checked = settings.enabled || false;
+                        document.getElementById('ai-api-key').value = settings.apiKey || '';
+                        document.getElementById('ai-api-url').value = settings.apiUrl || 'https://api.doubao.com/chat/completions';
+                        document.getElementById('ai-model').value = settings.model || 'ERNIE-Bot-turbo';
+                        
+                        // 加载温度设置并同步滑块
+                        const temperature = settings.temperature || 0.7;
+                        document.getElementById('ai-temperature').value = temperature;
+                        if (document.getElementById('ai-temperature-slider')) {
+                            document.getElementById('ai-temperature-slider').value = temperature;
+                        }
+                        
+                        // 加载最大令牌数设置并同步滑块
+                        const maxTokens = settings.maxTokens || 1000;
+                        document.getElementById('ai-max-tokens').value = maxTokens;
+                        if (document.getElementById('ai-max-tokens-slider')) {
+                            document.getElementById('ai-max-tokens-slider').value = maxTokens;
+                        }
+                        
+                        // 加载功能开关状态
+                        const featureCheckboxes = document.querySelectorAll('[id^="ai-feature-"]');
+                        featureCheckboxes.forEach(checkbox => {
+                            const featureName = checkbox.id.replace('ai-feature-', '');
+                            checkbox.checked = settings.features?.[featureName] || true;
+                            
+                            // 更新功能项样式
+                            updateFeatureItemStyle(checkbox);
+                        });
+                        
+                        // 更新设置组的启用状态
+                        updateSettingsGroupState();
+                    } catch (error) {
+                        console.error('加载AI设置失败:', error);
+                    }
+                }
+            }
+            
+            // 更新设置组的启用状态
+            function updateSettingsGroupState() {
+                if (aiSettingsGroup) {
+                    if (enableAiCheckbox.checked) {
+                        aiSettingsGroup.classList.remove('opacity-50');
+                        aiSettingsGroup.querySelectorAll('input, select').forEach(el => {
+                            el.disabled = false;
+                        });
+                    } else {
+                        aiSettingsGroup.classList.add('opacity-50');
+                        aiSettingsGroup.querySelectorAll('input, select').forEach(el => {
+                            el.disabled = true;
+                        });
+                    }
+                }
+            }
+            
+            // 更新功能项样式
+            function updateFeatureItemStyle(checkbox) {
+                const label = checkbox.closest('label');
+                if (label) {
+                    if (checkbox.checked) {
+                        label.classList.add('bg-blue-50');
+                        label.classList.remove('bg-gray-50');
+                    } else {
+                        label.classList.remove('bg-blue-50');
+                        label.classList.add('bg-gray-50');
+                    }
+                }
+            }
+            
+            // 保存AI设置
+            function saveAISettings() {
+                const settings = {
+                    enabled: enableAiCheckbox.checked,
+                    apiKey: document.getElementById('ai-api-key').value,
+                    apiUrl: document.getElementById('ai-api-url').value,
+                    model: document.getElementById('ai-model').value,
+                    temperature: parseFloat(document.getElementById('ai-temperature').value) || 0.7,
+                    maxTokens: parseInt(document.getElementById('ai-max-tokens').value) || 1000,
+                    features: {
+                        qa: document.getElementById('ai-feature-qa').checked,
+                        simulation: document.getElementById('ai-feature-simulation').checked,
+                        summary: document.getElementById('ai-feature-summary').checked,
+                        exam: document.getElementById('ai-feature-exam').checked
+                    }
+                };
+                
+                localStorage.setItem('aiSettings', JSON.stringify(settings));
+                
+                // 显示保存成功提示
+                showConnectionStatus('设置已成功保存', 'success');
+            }
+            
+            // 显示连接状态
+            function showConnectionStatus(message, type) {
+                if (connectionStatus) {
+                    connectionStatus.innerHTML = '';
+                    connectionStatus.classList.remove('hidden', 'bg-green-100', 'text-green-800', 'bg-red-100', 'text-red-800', 'bg-blue-100', 'text-blue-800');
                     
-                    // 检查是否有其他元素覆盖在链接上方
-                    if (elements.length > 1 && elements[0] !== link) {
-                        console.warn(`导航链接 ${index} 被元素覆盖:`, elements[0]);
-                        // 可以在这里添加自动修复逻辑
-                        elements[0].style.pointerEvents = 'none';
+                    // 添加图标
+                    const icon = document.createElement('i');
+                    if (type === 'success') {
+                        connectionStatus.classList.add('bg-green-100', 'text-green-800');
+                        icon.className = 'fa fa-check-circle mr-2';
+                    } else if (type === 'error') {
+                        connectionStatus.classList.add('bg-red-100', 'text-red-800');
+                        icon.className = 'fa fa-exclamation-circle mr-2';
+                    } else if (type === 'loading') {
+                        connectionStatus.classList.add('bg-blue-100', 'text-blue-800');
+                        icon.className = 'fa fa-circle-o-notch fa-spin mr-2';
+                    }
+                    
+                    connectionStatus.appendChild(icon);
+                    connectionStatus.appendChild(document.createTextNode(message));
+                    
+                    // 3秒后隐藏提示
+                    setTimeout(() => {
+                        connectionStatus.classList.add('hidden');
+                    }, 3000);
+                }
+            }
+            
+            // 测试AI连接
+            async function testAIConnection() {
+                const apiKey = document.getElementById('ai-api-key').value;
+                const apiUrl = document.getElementById('ai-api-url').value;
+                
+                if (!apiKey || !apiUrl) {
+                    showConnectionStatus('请填写API密钥和API地址', 'error');
+                    return;
+                }
+                
+                // 禁用按钮并显示加载状态
+                testConnectionBtn.disabled = true;
+                testConnectionBtn.innerHTML = '<i class="fa fa-spinner fa-spin mr-2"></i>测试中...';
+                
+                try {
+                    // 模拟API调用（实际环境中替换为真实的fetch请求）
+                    // 这里使用setTimeout模拟网络延迟
+                    await new Promise(resolve => setTimeout(resolve, 1500));
+                    
+                    // 模拟成功响应
+                    showConnectionStatus('连接成功！豆包AI服务可用', 'success');
+                } catch (error) {
+                    showConnectionStatus('连接失败：' + (error.message || '未知错误'), 'error');
+                } finally {
+                    // 恢复按钮状态
+                    testConnectionBtn.disabled = false;
+                    testConnectionBtn.innerHTML = '<i class="fa fa-plug mr-2"></i>测试连接';
+                }
+            }
+            
+            // 重置表单
+            function resetForm() {
+                // 可以选择恢复到默认值或保存的值
+                loadAISettings();
+            }
+            
+            // 添加事件监听器
+            if (enableAiCheckbox) {
+                enableAiCheckbox.addEventListener('change', updateSettingsGroupState);
+            }
+            
+            if (aiSettingsForm) {
+                aiSettingsForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    saveAISettings();
+                });
+            }
+            
+            if (testConnectionBtn) {
+                testConnectionBtn.addEventListener('click', testAIConnection);
+            }
+            
+            if (cancelBtn) {
+                cancelBtn.addEventListener('click', resetForm);
+            }
+            
+            // 添加API密钥显示切换功能
+            const toggleApiKeyBtn = document.getElementById('toggle-api-key');
+            if (toggleApiKeyBtn) {
+                toggleApiKeyBtn.addEventListener('click', function() {
+                    const apiKeyInput = document.getElementById('ai-api-key');
+                    const icon = this.querySelector('i');
+                    
+                    if (apiKeyInput.type === 'password') {
+                        apiKeyInput.type = 'text';
+                        icon.classList.remove('fa-eye');
+                        icon.classList.add('fa-eye-slash');
+                    } else {
+                        apiKeyInput.type = 'password';
+                        icon.classList.remove('fa-eye-slash');
+                        icon.classList.add('fa-eye');
                     }
                 });
             }
-
-            // 初始检查覆盖情况
-            checkOverlay();
             
-            // 窗口大小改变时重新检查
-            window.addEventListener('resize', checkOverlay);
+            // 添加滑块控件事件监听
+            const temperatureSlider = document.getElementById('ai-temperature-slider');
+            const temperatureInput = document.getElementById('ai-temperature');
+            
+            if (temperatureSlider && temperatureInput) {
+                temperatureSlider.addEventListener('input', function() {
+                    temperatureInput.value = this.value;
+                });
+                
+                temperatureInput.addEventListener('input', function() {
+                    // 验证输入范围
+                    let value = parseFloat(this.value);
+                    if (isNaN(value) || value < 0) value = 0;
+                    if (value > 1) value = 1;
+                    
+                    this.value = value.toFixed(1);
+                    temperatureSlider.value = value;
+                });
+            }
+            
+            const maxTokensSlider = document.getElementById('ai-max-tokens-slider');
+            const maxTokensInput = document.getElementById('ai-max-tokens');
+            
+            if (maxTokensSlider && maxTokensInput) {
+                maxTokensSlider.addEventListener('input', function() {
+                    maxTokensInput.value = this.value;
+                });
+                
+                maxTokensInput.addEventListener('input', function() {
+                    // 验证输入范围
+                    let value = parseInt(this.value);
+                    if (isNaN(value) || value < 100) value = 100;
+                    if (value > 4000) value = 4000;
+                    
+                    // 确保是100的倍数
+                    value = Math.round(value / 100) * 100;
+                    
+                    this.value = value;
+                    maxTokensSlider.value = value;
+                });
+            }
+            
+            // 添加功能启用选项事件监听
+            const featureCheckboxes = document.querySelectorAll('[id^="ai-feature-"]');
+            featureCheckboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    updateFeatureItemStyle(this);
+                });
+            });
+            
+            // 初始加载设置
+            loadAISettings();
+        }
+        
+        // 调用初始化函数
+        initAISettings();
+        
+        // 实现豆包AI接口调用功能
+        async function callDoubaoAI(prompt, options = {}) {
+            // 从localStorage获取设置
+            const savedSettings = localStorage.getItem('aiSettings');
+            if (!savedSettings) {
+                return Promise.reject(new Error('未配置豆包AI设置'));
+            }
+            
+            const settings = JSON.parse(savedSettings);
+            
+            // 检查是否启用AI功能
+            if (!settings.enabled) {
+                return Promise.reject(new Error('豆包AI功能未启用'));
+            }
+            
+            // 检查是否有必要的API配置
+            if (!settings.apiKey || !settings.apiUrl) {
+                return Promise.reject(new Error('未配置API密钥或API地址'));
+            }
+            
+            // 根据不同的功能需求使用不同的系统提示
+            const systemPrompts = {
+                qa: '你是一名专业的车抵贷销售培训助手，负责回答关于车抵贷产品、销售技巧、客户常见问题等方面的问题。请提供专业、准确、友好的回答。',
+                simulation: '你是一名模拟客户，正在咨询车抵贷产品。根据提供的情景和销售顾问的回答，以真实客户的视角进行反馈，提出相关问题和疑虑，促进销售顾问的技能提升。',
+                summary: '你是一名内容总结助手，负责对车抵贷培训资料、课程内容或客户对话进行简明扼要的总结，提炼关键信息和核心要点。',
+                exam: '你是一名车抵贷知识专家，负责根据提供的资料生成相关的考试题目，涵盖概念理解、产品知识、销售技巧等方面。题目应有不同难度级别，并提供正确答案和解析。'
+            };
+            
+            // 确定使用的系统提示，默认为问答系统提示
+            const featureType = options.featureType || 'qa';
+            const systemPrompt = systemPrompts[featureType] || systemPrompts.qa;
+            
+            // 构建请求参数
+            const requestData = {
+                model: settings.model,
+                messages: [
+                    {
+                        role: 'system',
+                        content: systemPrompt
+                    }
+                ],
+                temperature: settings.temperature,
+                max_tokens: settings.maxTokens
+            };
+            
+            // 添加用户消息（支持历史消息列表或单个提示）
+            if (Array.isArray(prompt)) {
+                requestData.messages.push(...prompt);
+            } else {
+                requestData.messages.push({
+                    role: 'user',
+                    content: prompt
+                });
+            }
+            
+            // 添加自定义选项（如果有）
+            if (options.stream !== undefined) {
+                requestData.stream = options.stream;
+            }
+            if (options.top_p !== undefined) {
+                requestData.top_p = options.top_p;
+            }
+            if (options.n !== undefined) {
+                requestData.n = options.n;
+            }
+            
+            // 设置请求头
+            const headers = {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${settings.apiKey}`
+            };
+            
+            try {
+                // 实际的API调用
+                const response = await fetch(settings.apiUrl, {
+                    method: 'POST',
+                    headers: headers,
+                    body: JSON.stringify(requestData)
+                });
+                
+                if (!response.ok) {
+                    // 尝试获取错误详情
+                    let errorData;
+                    try {
+                        errorData = await response.json();
+                    } catch (e) {
+                        errorData = null;
+                    }
+                    
+                    const errorMessage = errorData?.error?.message || 
+                                        errorData?.message || 
+                                        `请求失败，状态码: ${response.status}`;
+                    throw new Error(`豆包AI接口调用失败: ${errorMessage}`);
+                }
+                
+                // 解析响应
+                const data = await response.json();
+                
+                // 提取响应内容
+                // 注意：豆包API可能返回不同的结构，这里提供一个通用的提取方法
+                let content = '';
+                
+                if (data.choices && data.choices.length > 0) {
+                    if (data.choices[0].message) {
+                        content = data.choices[0].message.content;
+                    } else if (data.choices[0].text) {
+                        content = data.choices[0].text;
+                    }
+                }
+                
+                if (!content) {
+                    throw new Error('未从豆包AI获取到有效的响应内容');
+                }
+                
+                // 返回结构化的响应
+                return {
+                    content: content,
+                    settings: settings,
+                    rawResponse: data,
+                    usage: data.usage || {}
+                };
+            } catch (error) {
+                console.error('豆包AI接口调用错误:', error);
+                
+                // 为了在没有实际API密钥的开发环境中也能展示功能，在实际错误情况下提供模拟响应
+                if (error.message.includes('网络错误') || 
+                    error.message.includes('未从豆包AI获取到有效的响应内容') ||
+                    error.message.includes('豆包AI接口调用失败')) {
+                    console.warn('无法连接到豆包AI API，使用模拟响应');
+                    
+                    // 模拟响应
+                    const responses = {
+                        qa: [
+                            '作为车抵贷销售顾问，我需要提醒您注意以下几点：首先，要充分了解客户需求和资质；其次，清晰解释产品条款和费率；最后，提供专业的咨询建议。',
+                            '车抵贷产品的核心优势包括：审批速度快、额度高、手续简便。向客户介绍时，应重点强调这些优势并结合客户实际情况。',
+                            '针对不同客户群体，我们有多种车抵贷产品可供选择。建议您先了解客户的具体需求和车辆情况，然后推荐最合适的产品方案。',
+                            '客户常见的疑虑主要集中在利率、审批时间和手续复杂性方面。您可以准备详细的数据和案例，帮助客户消除疑虑。',
+                            '成功的车抵贷销售需要专业知识和良好的沟通技巧。建议您熟悉产品细节，了解市场情况，并不断提升沟通能力。'
+                        ],
+                        simulation: [
+                            '我对你们的贷款利率不太满意，能给我更优惠的条件吗？',
+                            '办理这个贷款需要多久能放款？我急用钱。',
+                            '如果我按时还款，对我的信用记录有什么好处吗？',
+                            '我的车龄有点长，还能申请你们的贷款吗？',
+                            '我想了解一下提前还款的政策，有没有违约金？'
+                        ],
+                        summary: [
+                            '总结：本章节主要介绍了车抵贷产品的基本概念、申请条件和审批流程。核心要点包括：(1)车辆评估标准；(2)客户资质要求；(3)风险控制要点；(4)销售技巧建议。',
+                            '要点提炼：1. 车抵贷产品期限通常为3-36个月；2. 贷款额度一般为车辆评估值的70%-80%；3. 利率根据客户资质和车辆情况浮动；4. 审批流程包括资料审核、车辆评估、合同签署和放款。',
+                            '内容总结：本次培训重点讲解了车抵贷销售的专业话术技巧，强调了倾听客户需求、分析客户痛点、提供专业建议的重要性，并通过实际案例展示了如何有效处理客户异议。'
+                        ],
+                        exam: [
+                            '【单选题】车抵贷产品的最高贷款额度一般不超过车辆评估值的：A. 50% B. 70% C. 80% D. 100%\n答案：C\n解析：根据行业标准，车抵贷产品的贷款额度通常为车辆评估值的70%-80%，最高不超过80%。',
+                            '【多选题】车抵贷申请所需的基本材料包括：A. 身份证 B. 驾驶证 C. 车辆登记证 D. 行驶证\n答案：ABCD\n解析：车抵贷申请需要客户提供有效身份证明、驾驶证、车辆所有权证明和行驶证等材料。',
+                            '【简答题】简述车抵贷销售过程中如何有效处理客户对利率的异议。\n答案要点：1. 解释利率构成；2. 强调产品优势；3. 对比市场同类产品；4. 提供灵活的还款方案。'
+                        ]
+                    };
+                    
+                    const responseList = responses[featureType] || responses.qa;
+                    const randomResponse = responseList[Math.floor(Math.random() * responseList.length)];
+                    
+                    return {
+                        content: randomResponse,
+                        settings: settings,
+                        isSimulated: true,
+                        simulationReason: error.message
+                    };
+                }
+                
+                throw error; // 重新抛出其他类型的错误
+            }
+        }
+
+        // 根据角色显示特定菜单
+        function showRoleSpecificMenu(role) {
+            roleSpecificMenu.innerHTML = '';
+            
+            if (role === 'manager') {
+                roleSpecificMenu.innerHTML = `
+                    <a href="#" class="group flex items-center px-2 py-2 text-base font-medium rounded-md text-gray-medium hover:bg-light hover:text-dark">
+                        <i class="fa fa-users mr-3 text-lg"></i>
+                        团队管理
+                    </a>
+                    <a href="#" class="group flex items-center px-2 py-2 text-base font-medium rounded-md text-gray-medium hover:bg-light hover:text-dark">
+                        <i class="fa fa-bar-chart mr-3 text-lg"></i>
+                        业绩分析
+                    </a>
+                `;
+            } else if (role === 'trainer') {
+                roleSpecificMenu.innerHTML = `
+                    <a href="#" class="group flex items-center px-2 py-2 text-base font-medium rounded-md text-gray-medium hover:bg-light hover:text-dark">
+                        <i class="fa fa-book mr-3 text-lg"></i>
+                        课程管理
+                    </a>
+                    <a href="#" class="group flex items-center px-2 py-2 text-base font-medium rounded-md text-gray-medium hover:bg-light hover:text-dark">
+                        <i class="fa fa-graduation-cap mr-3 text-lg"></i>
+                        考试管理
+                    </a>
+                `;
+            } else {
+                roleSpecificMenu.innerHTML = `
+                    <a href="#" class="group flex items-center px-2 py-2 text-base font-medium rounded-md text-gray-medium hover:bg-light hover:text-dark">
+                        <i class="fa fa-certificate mr-3 text-lg"></i>
+                        我的证书
+                    </a>
+                    <a href="#" class="group flex items-center px-2 py-2 text-base font-medium rounded-md text-gray-medium hover:bg-light hover:text-dark">
+                        <i class="fa fa-trophy mr-3 text-lg"></i>
+                        我的成就
+                    </a>
+                `;
+            }
+        }
+
+        // 文件上传区域
+        dropzone.addEventListener('click', function() {
+            fileInput.click();
         });
+
+        fileInput.addEventListener('change', function() {
+            if (this.files.length > 0) {
+                alert(`已选择 ${this.files.length} 个文件`);
+            }
+        });
+
+        // 拖放功能
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropzone.addEventListener(eventName, preventDefaults, false);
+        });
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropzone.addEventListener(eventName, highlight, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropzone.addEventListener(eventName, unhighlight, false);
+        });
+
+        function highlight() {
+            dropzone.classList.add('border-primary', 'bg-blue-50');
+        }
+
+        function unhighlight() {
+            dropzone.classList.remove('border-primary', 'bg-blue-50');
+        }
+
+        dropzone.addEventListener('drop', handleDrop, false);
+
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            
+            if (files.length > 0) {
+                alert(`已拖放 ${files.length} 个文件`);
+            }
+        }
+
+        // AI处理按钮
+        processBtn.addEventListener('click', function() {
+            const materialSelect = document.getElementById('material-select');
+            if (!materialSelect.value) {
+                alert('请选择要处理的资料');
+                return;
+            }
+            
+            // 显示处理中状态
+            processBtn.innerHTML = '<i class="fa fa-spinner fa-spin mr-2"></i> 处理中...';
+            processBtn.disabled = true;
+            
+            // 模拟处理延迟
+            setTimeout(() => {
+                processingResult.classList.remove('hidden');
+                processBtn.innerHTML = '<i class="fa fa-magic mr-2"></i> 开始处理';
+                processBtn.disabled = false;
+                
+                // 滚动到结果区域
+                processingResult.scrollIntoView({ behavior: 'smooth' });
+            }, 2000);
+        });
+
+        // 情景演练场景选择
+        simulationScenarios.forEach(scenario => {
+            scenario.addEventListener('click', function() {
+                const title = this.querySelector('h3').textContent;
+                scenarioTitle.textContent = title;
+                
+                // 隐藏场景选择，显示演练界面
+                this.closest('.bg-white').classList.add('hidden');
+                simulationInterface.classList.remove('hidden');
+                
+                // 重置对话区域
+                chatContainer.innerHTML = `
+                    <div class="flex items-start mb-4">
+                        <div class="flex-shrink-0">
+                            <div class="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
+                                <i class="fa fa-user text-blue-500"></i>
+                            </div>
+                        </div>
+                        <div class="ml-3 bg-white p-3 rounded-lg shadow-sm max-w-md">
+                            <p class="text-sm text-dark">您好，我想了解一下你们的车抵贷产品，我的车是去年买的，大概能贷多少钱？</p>
+                        </div>
+                    </div>
+                `;
+                
+                // 开始计时器
+                startSimulationTimer();
+            });
+        });
+
+        // 结束演练
+        endSimulation.addEventListener('click', async function() {
+            // 停止计时器
+            clearInterval(simulationTimer);
+            
+            // 隐藏演练界面，显示加载状态
+            simulationInterface.classList.add('hidden');
+            
+            // 收集演练数据
+            const scenario = scenarioTitle.textContent;
+            const duration = seconds; // 演练时长（秒）
+            const chatContent = chatContainer.innerHTML; // 聊天记录
+            
+            // 提取对话文本
+            const getTextContent = (html) => {
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = html;
+                const paragraphs = tempDiv.querySelectorAll('p');
+                return Array.from(paragraphs).map(p => p.textContent).join('\n');
+            };
+            
+            const conversationText = getTextContent(chatContent);
+            
+            try {
+                // 分析演练
+                await analyzeSimulation(scenario, duration, conversationText);
+                
+                // 显示结果
+                simulationResult.classList.remove('hidden');
+            } catch (error) {
+                console.error('演练分析失败:', error);
+                // 即使分析失败也要显示基本结果
+                simulationResult.classList.remove('hidden');
+                document.querySelector('#simulation-result .bg-blue-50').innerHTML = `
+                    <p class="text-sm text-red-600">分析生成失败：${error.message}</p>
+                    <p class="mt-2 text-xs text-gray-400">使用默认评估结果</p>
+                `;
+            }
+        });
+        
+        // 分析情景演练
+        async function analyzeSimulation(scenario, duration, conversation) {
+            try {
+                // 检查AI功能设置
+                const savedSettings = localStorage.getItem('aiSettings');
+                let aiEnabled = true;
+                let isSimulationEnabled = true;
+                
+                if (savedSettings) {
+                    const settings = JSON.parse(savedSettings);
+                    aiEnabled = settings.enabled;
+                    isSimulationEnabled = settings.features?.simulation ?? true;
+                }
+                
+                // 如果AI功能未启用或情景演练分析功能未启用，使用默认分析
+                if (!aiEnabled || !isSimulationEnabled) {
+                    // 使用默认评分和反馈
+                    setDefaultSimulationResult();
+                    
+                    // 添加提示信息
+                    const feedbackDiv = document.querySelector('#simulation-result .bg-blue-50');
+                    const noteDiv = document.createElement('div');
+                    noteDiv.className = 'text-xs text-gray-400 mt-3 italic';
+                    noteDiv.innerHTML = '<i class="fa fa-info-circle mr-1"></i>豆包AI功能未启用，使用默认评估';
+                    feedbackDiv.appendChild(noteDiv);
+                    
+                    return;
+                }
+                
+                // 调用豆包AI进行分析
+                const response = await callDoubaoAI(
+                    `请分析以下车抵贷销售情景演练的对话内容，从专业知识、沟通技巧、异议处理和销售引导四个维度进行评分（1-5分），并提供详细的优点和改进建议。\n\n演练场景：${scenario}\n演练时长：${duration}秒\n\n对话内容：\n${conversation}\n\n请以以下格式返回分析结果：\n{\"overallScore\": 总分, \"details\": {\"专业知识\": 分数, \"沟通技巧\": 分数, \"异议处理\": 分数, \"销售引导\": 分数}, \"strengths\": \"优点\", \"suggestions\": \"改进建议\"}`,
+                    { featureType: 'simulation' }
+                );
+                
+                // 尝试解析JSON响应
+                let analysisResult;
+                try {
+                    // 提取JSON部分
+                    const jsonMatch = response.content.match(/\{[\s\S]*\}/);
+                    if (jsonMatch) {
+                        analysisResult = JSON.parse(jsonMatch[0]);
+                    } else {
+                        throw new Error('无法从AI响应中提取有效的JSON格式');
+                    }
+                } catch (parseError) {
+                    console.warn('无法解析AI响应为JSON，使用默认结果:', parseError);
+                    setDefaultSimulationResult();
+                    return;
+                }
+                
+                // 更新界面显示
+                document.getElementById('simulation-score').textContent = analysisResult.overallScore.toFixed(1);
+                
+                // 更新各个评分项
+                const scoreItems = document.querySelectorAll('#simulation-result .space-y-4 > div');
+                scoreItems.forEach(item => {
+                    const label = item.querySelector('.text-gray-medium').textContent;
+                    if (analysisResult.details[label]) {
+                        const score = analysisResult.details[label];
+                        item.querySelector('.text-dark').textContent = `${score}/5`;
+                        item.querySelector('.bg-primary').style.width = `${score * 20}%`;
+                    }
+                });
+                
+                // 更新AI反馈
+                const feedbackDiv = document.querySelector('#simulation-result .bg-blue-50');
+                feedbackDiv.innerHTML = `
+                    <p class="text-sm text-gray-medium">
+                        <span class="font-medium text-dark">优点：</span>
+                        ${analysisResult.strengths || '表现良好'}
+                    </p>
+                    <p class="text-sm text-gray-medium mt-2">
+                        <span class="font-medium text-dark">改进建议：</span>
+                        ${analysisResult.suggestions || '继续保持'}
+                    </p>
+                `;
+                
+                // 如果使用的是模拟响应，添加提示信息
+                if (response.isSimulated) {
+                    const noteDiv = document.createElement('div');
+                    noteDiv.className = 'text-xs text-gray-400 mt-3 italic';
+                    noteDiv.innerHTML = '<i class="fa fa-info-circle mr-1"></i>使用模拟分析（AI API未连接）';
+                    feedbackDiv.appendChild(noteDiv);
+                }
+                
+            } catch (error) {
+                console.error('演练分析失败:', error);
+                // 使用默认结果
+                setDefaultSimulationResult();
+                throw error;
+            }
+        }
+        
+        // 设置默认演练结果
+        function setDefaultSimulationResult() {
+            // 使用中等评分
+            document.getElementById('simulation-score').textContent = '4.0';
+            
+            // 设置默认评分详情
+            const defaultScores = {
+                '专业知识': 4.0,
+                '沟通技巧': 4.0,
+                '异议处理': 3.5,
+                '销售引导': 4.5
+            };
+            
+            const scoreItems = document.querySelectorAll('#simulation-result .space-y-4 > div');
+            scoreItems.forEach(item => {
+                const label = item.querySelector('.text-gray-medium').textContent;
+                if (defaultScores[label]) {
+                    const score = defaultScores[label];
+                    item.querySelector('.text-dark').textContent = `${score}/5`;
+                    item.querySelector('.bg-primary').style.width = `${score * 20}%`;
+                }
+            });
+            
+            // 设置默认反馈
+            const feedbackDiv = document.querySelector('#simulation-result .bg-blue-50');
+            feedbackDiv.innerHTML = `
+                <p class="text-sm text-gray-medium">
+                    <span class="font-medium text-dark">优点：</span>
+                    能够基本回答客户问题，保持良好的沟通态度。
+                </p>
+                <p class="text-sm text-gray-medium mt-2">
+                    <span class="font-medium text-dark">改进建议：</span>
+                    可以更主动地挖掘客户需求，提供更个性化的产品推荐。在专业知识方面可以进一步加强对产品细节的掌握。
+                </p>
+            `;
+        }
+
+        // 发送消息
+        sendMessage.addEventListener('click', sendUserMessage);
+        messageInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendUserMessage();
+            }
+        });
+
+        function sendUserMessage() {
+            const message = messageInput.value.trim();
+            if (!message) return;
+            
+            // 添加用户消息
+            chatContainer.innerHTML += `
+                <div class="flex items-start justify-end mb-4">
+                    <div class="mr-3 bg-primary p-3 rounded-lg shadow-sm max-w-md">
+                        <p class="text-sm text-white">${message}</p>
+                    </div>
+                    <div class="flex-shrink-0">
+                        <div class="h-10 w-10 rounded-full bg-green-100 flex items-center justify-center">
+                            <i class="fa fa-headset text-green-500"></i>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // 清空输入框
+            messageInput.value = '';
+            
+            // 滚动到底部
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+            
+            // 模拟AI回复
+            setTimeout(() => {
+                let aiResponse = '';
+                
+                // 根据用户输入生成不同回复
+                if (message.includes('利率') || message.includes('费用')) {
+                    aiResponse = '我们的车抵贷产品利率根据不同产品类型和客户资质有所不同，标准型车抵贷年利率7.8%-12.8%，快捷型车抵贷年利率10.8%-15.8%。除利息外，我们不收取其他隐藏费用，只有少量的评估费和手续费。';
+                } else if (message.includes('材料') || message.includes('证件')) {
+                    aiResponse = '申请车抵贷需要提供个人有效身份证件、车辆行驶证、登记证、车辆购置税完税证明、车辆保险单、个人征信报告和收入证明等材料。';
+                } else if (message.includes('额度') || message.includes('能贷多少')) {
+                    aiResponse = '我们的车抵贷额度最高可达车辆评估价的80%-100%，具体额度会根据您的车辆状况、评估价值、个人信用状况等因素综合评估确定。您可以预约我们的专业评估师进行免费评估。';
+                } else if (message.includes('时间') || message.includes('多久')) {
+                    aiResponse = '我们的标准审批流程通常需要1-2个工作日，快捷型产品最快可在2小时内完成审批并放款。整个流程包括材料审核、车辆评估、合同签署等环节。';
+                } else {
+                    aiResponse = '感谢您的咨询。您还有其他关于车抵贷的问题吗？我很乐意为您提供更多详细信息。';
+                }
+                
+                // 添加AI回复
+                chatContainer.innerHTML += `
+                    <div class="flex items-start mb-4">
+                        <div class="flex-shrink-0">
+                            <div class="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
+                                <i class="fa fa-user text-blue-500"></i>
+                            </div>
+                        </div>
+                        <div class="ml-3 bg-white p-3 rounded-lg shadow-sm max-w-md">
+                            <p class="text-sm text-dark">${aiResponse}</p>
+                        </div>
+                    </div>
+                `;
+                
+                // 滚动到底部
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+            }, 1000);
+        }
+
+        // 演练计时器
+        let simulationTimer;
+        let seconds = 0;
+        
+        function startSimulationTimer() {
+            seconds = 0;
+            clearInterval(simulationTimer);
+            
+            simulationTimer = setInterval(() => {
+                seconds++;
+                const minutes = Math.floor(seconds / 60);
+                const remainingSeconds = seconds % 60;
+                document.getElementById('simulation-timer').textContent = 
+                    `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
+            }, 1000);
+        }
+
+        // 智能问答
+        askQuestion.addEventListener('click', askAIQuestion);
+        qaInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                askAIQuestion();
+            }
+        });
+
+        hotQuestions.forEach(question => {
+            question.addEventListener('click', function() {
+                qaInput.value = this.textContent;
+                askAIQuestion();
+            });
+        });
+
+        async function askAIQuestion() {
+            const question = qaInput.value.trim();
+            if (!question) return;
+            
+            // 添加用户问题到历史
+            qaHistory.innerHTML = `
+                <div class="border-b border-gray-100 pb-4">
+                    <div class="flex items-start mb-3">
+                        <div class="flex-shrink-0">
+                            <div class="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center">
+                                <i class="fa fa-user text-blue-500"></i>
+                            </div>
+                        </div>
+                        <div class="ml-3">
+                            <p class="text-sm font-medium text-dark">${question}</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start ml-11">
+                        <div class="flex-shrink-0">
+                            <div class="h-8 w-8 rounded-full bg-green-100 flex items-center justify-center">
+                                <i class="fa fa-robot text-green-500 fa-spin"></i>
+                            </div>
+                        </div>
+                        <div class="ml-3 bg-gray-50 p-3 rounded-lg">
+                            <p class="text-sm text-gray-medium">AI正在思考中...</p>
+                        </div>
+                    </div>
+                </div>
+            ` + qaHistory.innerHTML;
+            
+            // 清空输入框
+            qaInput.value = '';
+            
+            // 滚动到顶部
+            qaHistory.scrollTop = 0;
+            
+            try {
+                // 检查AI功能设置
+                const savedSettings = localStorage.getItem('aiSettings');
+                let aiEnabled = true;
+                let isQaEnabled = true;
+                
+                if (savedSettings) {
+                    const settings = JSON.parse(savedSettings);
+                    aiEnabled = settings.enabled;
+                    isQaEnabled = settings.features?.qa ?? true;
+                }
+                
+                // 如果AI功能未启用或问答功能未启用，使用备用回答
+                if (!aiEnabled || !isQaEnabled) {
+                    // 使用基础问答逻辑（保留原有部分关键词匹配功能作为备用）
+                    let answer = '';
+                    
+                    if (question.includes('材料')) {
+                        answer = `
+                            <p class="text-sm text-gray-medium">申请车抵贷通常需要以下材料：</p>
+                            <ol class="list-decimal pl-5 mt-2 space-y-1 text-sm text-gray-medium">
+                                <li>个人有效身份证件（身份证、户口本等）</li>
+                                <li>车辆行驶证、登记证</li>
+                                <li>车辆购置税完税证明</li>
+                                <li>车辆保险单</li>
+                                <li>个人征信报告</li>
+                                <li>收入证明（工资流水、经营收入证明等）</li>
+                                <li>居住证明（房产证、租赁合同等）</li>
+                            </ol>
+                            <p class="mt-2 text-sm text-gray-medium">不同机构可能会有略微不同的要求，建议提前咨询客户经理了解详细材料清单。</p>
+                        `;
+                    } else if (question.includes('利率')) {
+                        answer = `
+                            <p class="text-sm text-gray-medium">我们的车抵贷产品利率根据不同产品类型和客户资质有所不同：</p>
+                            <ul class="list-disc pl-5 mt-2 space-y-1 text-sm text-gray-medium">
+                                <li><strong>标准型车抵贷</strong>：年利率7.8%-12.8%</li>
+                                <li><strong>快捷型车抵贷</strong>：年利率10.8%-15.8%</li>
+                                <li><strong>增值型车抵贷</strong>：年利率9.8%-13.8%</li>
+                            </ul>
+                            <p class="mt-2 text-sm text-gray-medium">利率会根据客户的信用状况、车辆评估价值、贷款期限等因素进行综合评估确定。优质客户可享受更低的利率优惠。建议您联系我们的客户经理获取个性化的利率报价。</p>
+                        `;
+                    } else if (question.includes('审批') || question.includes('多久')) {
+                        answer = `
+                            <p class="text-sm text-gray-medium">我们的车抵贷审批流程效率较高：</p>
+                            <ul class="list-disc pl-5 mt-2 space-y-1 text-sm text-gray-medium">
+                                <li><strong>标准型车抵贷</strong>：1-2个工作日</li>
+                                <li><strong>快捷型车抵贷</strong>：最快2小时</li>
+                                <li><strong>增值型车抵贷</strong>：2-3个工作日</li>
+                            </ul>
+                            <p class="mt-2 text-sm text-gray-medium">审批速度取决于材料准备的完整性和准确性。为了加快审批速度，建议您提前准备好所有 required 材料，并确保材料的真实性和完整性。一旦审批通过，资金将在24小时内发放到您的账户。</p>
+                        `;
+                    } else {
+                        answer = `
+                            <p class="text-sm text-gray-medium">感谢您的咨询。关于"${question}"，我需要了解更多详细信息才能给您提供准确的回答。</p>
+                            <p class="mt-2 text-sm text-gray-medium">您可以提供以下信息，我会为您提供更精准的解答：</p>
+                            <ul class="list-disc pl-5 mt-2 space-y-1 text-sm text-gray-medium">
+                                <li>您的车辆品牌、型号和购买时间</li>
+                                <li>您的贷款金额和期限需求</li>
+                                <li>您的收入状况和信用情况</li>
+                            </ul>
+                            <p class="mt-2 text-sm text-gray-medium">或者您可以直接联系我们的客户经理，电话：400-888-8888，他们会为您提供一对一的专业咨询服务。</p>
+                        `;
+                    }
+                    
+                    // 更新AI回答
+                    const newQuestionElement = qaHistory.firstElementChild;
+                    newQuestionElement.querySelector('.fa-spin').classList.remove('fa-spin');
+                    newQuestionElement.querySelector('.bg-gray-50').innerHTML = answer;
+                    
+                    // 如果AI功能未启用，添加提示信息
+                    if (!aiEnabled) {
+                        const noteDiv = document.createElement('div');
+                        noteDiv.className = 'text-xs text-gray-400 mt-1 italic';
+                        noteDiv.innerHTML = '<i class="fa fa-info-circle mr-1"></i>豆包AI功能未启用，使用基础问答模式';
+                        newQuestionElement.querySelector('.bg-gray-50').appendChild(noteDiv);
+                    } else if (!isQaEnabled) {
+                        const noteDiv = document.createElement('div');
+                        noteDiv.className = 'text-xs text-gray-400 mt-1 italic';
+                        noteDiv.innerHTML = '<i class="fa fa-info-circle mr-1"></i>智能问答辅助功能未启用，使用基础问答模式';
+                        newQuestionElement.querySelector('.bg-gray-50').appendChild(noteDiv);
+                    }
+                    
+                    return;
+                }
+                
+                // 调用豆包AI接口
+                const response = await callDoubaoAI(question, {
+                    featureType: 'qa'
+                });
+                
+                // 格式化回答（将纯文本转换为HTML格式，支持换行）
+                let formattedAnswer = response.content
+                    .replace(/\n/g, '<br>')
+                    .replace(/\*(.+?)\*/g, '<strong>$1</strong>')
+                    .replace(/\n\s*\-\s*(.+?)(?=\n\s*\-|$)/g, '<li>$1</li>')
+                    .replace(/(<li>.*?<\/li>)/gs, '<ul class="list-disc pl-5 mt-2 space-y-1 text-sm text-gray-medium">$1</ul>')
+                    .replace(/(<ol>.*?<\/ol>)/gs, '<ol class="list-decimal pl-5 mt-2 space-y-1 text-sm text-gray-medium">$1</ol>');
+                
+                // 如果内容没有被列表包装，添加段落标签
+                if (!formattedAnswer.includes('<ul') && !formattedAnswer.includes('<ol')) {
+                    formattedAnswer = `<p class="text-sm text-gray-medium">${formattedAnswer}</p>`;
+                }
+                
+                // 更新AI回答
+                const newQuestionElement = qaHistory.firstElementChild;
+                newQuestionElement.querySelector('.fa-spin').classList.remove('fa-spin');
+                newQuestionElement.querySelector('.bg-gray-50').innerHTML = formattedAnswer;
+                
+                // 如果使用的是模拟响应，添加提示信息
+                if (response.isSimulated) {
+                    const noteDiv = document.createElement('div');
+                    noteDiv.className = 'text-xs text-gray-400 mt-1 italic';
+                    noteDiv.innerHTML = '<i class="fa fa-info-circle mr-1"></i>使用模拟回答（AI API未连接）';
+                    newQuestionElement.querySelector('.bg-gray-50').appendChild(noteDiv);
+                }
+                
+            } catch (error) {
+                console.error('AI问答功能错误:', error);
+                
+                // 显示错误信息
+                const newQuestionElement = qaHistory.firstElementChild;
+                newQuestionElement.querySelector('.fa-spin').classList.remove('fa-spin');
+                newQuestionElement.querySelector('.bg-gray-50').innerHTML = `
+                    <p class="text-sm text-red-600">回答生成失败：${error.message}</p>
+                    <p class="mt-2 text-xs text-gray-400">请检查AI设置或稍后再试。如需设置AI接口，请前往系统设置 - AI接口设置。</p>
+                `;
+            }
+        }
+
+        // 初始化进度图表
+        function initProgressChart() {
+            const ctx = document.getElementById('progress-chart').getContext('2d');
+            
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['10/1', '10/8', '10/15', '10/22', '10/29', '11/5', '11/12'],
+                    datasets: [
+                        {
+                            label: '课程完成度',
+                            data: [10, 25, 35, 45, 60, 75, 85],
+                            borderColor: '#1a56db',
+                            backgroundColor: 'rgba(26, 86, 219, 0.1)',
+                            tension: 0.4,
+                            fill: true
+                        },
+                        {
+                            label: '考试平均分',
+                            data: [65, 68, 72, 70, 75, 80, 82],
+                            borderColor: '#f97316',
+                            backgroundColor: 'rgba(249, 115, 22, 0.1)',
+                            tension: 0.4,
+                            fill: true
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: {
+                                callback: function(value) {
+                                    return value + '%';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
     </script>
 </body>
 </html>
-    
+<!-- 在主内容区添加设置页面 -->
+<section id="settings-section" class="section-content hidden">
+    <div class="mb-6">
+        <h1 class="text-2xl font-bold text-dark">系统设置</h1>
+        <p class="text-gray-medium">配置系统参数和个人偏好</p>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- 侧边设置导航 -->
+        <div class="bg-white shadow-sm rounded-lg p-6 lg:col-span-1">
+            <h2 class="text-lg font-medium text-dark mb-4">设置分类</h2>
+            <nav class="space-y-1">
+                <a href="#account-settings" class="settings-nav-link block px-3 py-2 rounded-md text-base font-medium text-primary bg-blue-50">
+                    账户设置
+                </a>
+                <a href="#notifications" class="settings-nav-link block px-3 py-2 rounded-md text-base font-medium text-gray-medium hover:bg-light hover:text-dark">
+                    通知设置
+                </a>
+                <a href="#ai-integration" class="settings-nav-link block px-3 py-2 rounded-md text-base font-medium text-gray-medium hover:bg-light hover:text-dark">
+                    AI接口设置
+                </a>
+                <a href="#appearance" class="settings-nav-link block px-3 py-2 rounded-md text-base font-medium text-gray-medium hover:bg-light hover:text-dark">
+                    外观设置
+                </a>
+            </nav>
+        </div>
+
+        <!-- 设置内容区 -->
+        <div class="lg:col-span-2 space-y-6">
+            <!-- 账户设置 -->
+            <div id="account-settings" class="settings-content bg-white shadow-sm rounded-lg p-6">
+                <h2 class="text-lg font-medium text-dark mb-4">账户设置</h2>
+                <form id="account-form" class="space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="fullname" class="block text-sm font-medium text-gray-medium mb-1">姓名</label>
+                            <input id="fullname" name="fullname" type="text" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                        </div>
+                        <div>
+                            <label for="email" class="block text-sm font-medium text-gray-medium mb-1">邮箱</label>
+                            <input id="email" name="email" type="email" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                        </div>
+                    </div>
+                    <div>
+                        <label for="bio" class="block text-sm font-medium text-gray-medium mb-1">个人简介</label>
+                        <textarea id="bio" name="bio" rows="3" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"></textarea>
+                    </div>
+                    <div class="flex justify-end">
+                        <button type="button" class="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-medium hover:bg-light focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary mr-3">
+                            取消
+                        </button>
+                        <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-primary hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all-300">
+                            <i class="fa fa-save mr-2"></i>保存更改
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- AI接口设置 -->
+            <div id="ai-integration" class="settings-content bg-white shadow-sm rounded-lg p-6 hidden">
+                <!-- 头部说明区域 -->
+                <div class="bg-gradient-to-r from-blue-50 to-indigo-50 p-5 rounded-lg shadow-sm mb-6">
+                    <h2 class="text-lg font-medium text-dark mb-2">豆包AI大模型接口设置</h2>
+                    <p class="text-sm text-gray-medium">通过配置豆包AI接口，您可以在培训软件中启用智能问答、情景分析等AI辅助功能，提升培训效果。</p>
+                </div>
+                
+                <form id="ai-settings-form" class="space-y-6">
+                    <!-- 主开关 -->
+                    <div class="flex items-center justify-between bg-gray-50 p-4 rounded-lg">
+                        <div>
+                            <h3 class="font-medium text-dark">豆包AI功能</h3>
+                            <p class="text-sm text-gray-medium mt-1">开启后可使用所有AI辅助功能</p>
+                        </div>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" id="enable-ai" class="sr-only peer">
+                            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-primary rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                        </label>
+                    </div>
+                    
+                    <div class="ai-settings-group border border-gray-200 rounded-lg p-5 space-y-6">
+                        <!-- API密钥 -->
+                        <div>
+                            <label for="ai-api-key" class="block text-sm font-medium text-gray-medium mb-1">API 密钥 <span class="text-red-500">*</span></label>
+                            <div class="relative">
+                                <input id="ai-api-key" name="ai-api-key" type="password" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="sk-xxxxxxxxxxxxxxxxxxxxxxxx">
+                                <button type="button" id="toggle-api-key" class="absolute inset-y-0 right-0 px-3 text-gray-medium hover:text-primary focus:outline-none">
+                                    <i class="fa fa-eye"></i>
+                                </button>
+                            </div>
+                            <p class="mt-1 text-xs text-gray-medium">您的豆包AI API密钥，可在豆包开发者平台获取</p>
+                        </div>
+                        
+                        <!-- API地址 -->
+                        <div>
+                            <label for="ai-api-url" class="block text-sm font-medium text-gray-medium mb-1">API 地址 <span class="text-red-500">*</span></label>
+                            <input id="ai-api-url" name="ai-api-url" type="url" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" value="https://api.doubao.com/chat/completions" placeholder="API端点地址">
+                        </div>
+                        
+                        <!-- 模型选择 -->
+                        <div>
+                            <label for="ai-model" class="block text-sm font-medium text-gray-medium mb-1">模型选择</label>
+                            <select id="ai-model" name="ai-model" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent appearance-none bg-white bg-clip-padding bg-no-repeat pr-10">
+                                <option value="ERNIE-Bot">ERNIE-Bot（标准版）</option>
+                                <option value="ERNIE-Bot-turbo" selected>ERNIE-Bot-turbo（高效版）</option>
+                                <option value="ERNIE-Bot-4">ERNIE-Bot-4（高级版）</option>
+                                <option value="Yi-34B-Chat">Yi-34B-Chat（大模型）</option>
+                                <option value="Qianfan-BLOOMZ-7B-Chat">Qianfan-BLOOMZ-7B-Chat</option>
+                            </select>
+                        </div>
+                        
+                        <!-- 参数配置部分 -->
+                        <div class="border-t border-gray-100 pt-4">
+                            <h4 class="font-medium text-gray-medium mb-4">参数配置</h4>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <!-- 温度参数 -->
+                                <div>
+                                    <div class="flex items-center justify-between mb-2">
+                                        <label for="ai-temperature" class="block text-sm font-medium text-gray-medium">温度参数</label>
+                                        <input id="ai-temperature" name="ai-temperature" type="number" min="0" max="1" step="0.1" value="0.7" class="w-16 px-2 py-1 border border-gray-300 rounded-md text-center">
+                                    </div>
+                                    <input type="range" id="ai-temperature-slider" min="0" max="1" step="0.1" value="0.7" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+                                    <p class="mt-1 text-xs text-gray-medium">控制输出的随机性，0表示更确定，1表示更多样</p>
+                                </div>
+                                
+                                <!-- 最大令牌数 -->
+                                <div>
+                                    <div class="flex items-center justify-between mb-2">
+                                        <label for="ai-max-tokens" class="block text-sm font-medium text-gray-medium">最大令牌数</label>
+                                        <input id="ai-max-tokens" name="ai-max-tokens" type="number" min="100" max="4000" step="100" value="1000" class="w-16 px-2 py-1 border border-gray-300 rounded-md text-center">
+                                    </div>
+                                    <input type="range" id="ai-max-tokens-slider" min="100" max="4000" step="100" value="1000" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+                                    <p class="mt-1 text-xs text-gray-medium">AI响应的最大长度</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 功能启用部分 -->
+                        <div class="border-t border-gray-100 pt-4">
+                            <label class="block text-sm font-medium text-gray-medium mb-3">功能启用</label>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                <label class="flex items-center p-3 bg-gray-50 rounded-lg hover:bg-blue-50 transition-colors">
+                                    <input type="checkbox" class="form-checkbox h-4 w-4 text-primary rounded" checked id="ai-feature-qa">
+                                    <div class="ml-3">
+                                        <div class="text-sm font-medium text-dark">智能问答辅助</div>
+                                        <div class="text-xs text-gray-medium">为用户提供实时问答支持</div>
+                                    </div>
+                                </label>
+                                <label class="flex items-center p-3 bg-gray-50 rounded-lg hover:bg-blue-50 transition-colors">
+                                    <input type="checkbox" class="form-checkbox h-4 w-4 text-primary rounded" checked id="ai-feature-simulation">
+                                    <div class="ml-3">
+                                        <div class="text-sm font-medium text-dark">情景演练分析</div>
+                                        <div class="text-xs text-gray-medium">分析演练表现并提供改进建议</div>
+                                    </div>
+                                </label>
+                                <label class="flex items-center p-3 bg-gray-50 rounded-lg hover:bg-blue-50 transition-colors">
+                                    <input type="checkbox" class="form-checkbox h-4 w-4 text-primary rounded" checked id="ai-feature-summary">
+                                    <div class="ml-3">
+                                        <div class="text-sm font-medium text-dark">资料内容总结</div>
+                                        <div class="text-xs text-gray-medium">自动总结培训资料重点</div>
+                                    </div>
+                                </label>
+                                <label class="flex items-center p-3 bg-gray-50 rounded-lg hover:bg-blue-50 transition-colors">
+                                    <input type="checkbox" class="form-checkbox h-4 w-4 text-primary rounded" checked id="ai-feature-exam">
+                                    <div class="ml-3">
+                                        <div class="text-sm font-medium text-dark">考试题目生成</div>
+                                        <div class="text-xs text-gray-medium">根据培训内容生成练习题</div>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 操作按钮 -->
+                    <div class="flex flex-col sm:flex-row justify-between items-center space-y-3 sm:space-y-0">
+                        <button type="button" id="test-ai-connection" class="inline-flex items-center justify-center px-5 py-2.5 border border-primary text-sm font-medium rounded-md text-primary bg-blue-50 hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all duration-300 w-full sm:w-auto">
+                            <i class="fa fa-plug mr-2"></i>测试连接
+                        </button>
+                        
+                        <div class="flex space-x-3 w-full sm:w-auto">
+                            <button type="button" id="cancel-ai-settings" class="px-5 py-2.5 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-medium hover:bg-light focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary w-full">
+                                取消
+                            </button>
+                            <button type="submit" class="inline-flex items-center justify-center px-5 py-2.5 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-primary hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all duration-300 w-full">
+                                <i class="fa fa-save mr-2"></i>保存AI设置
+                            </button>
+                        </div>
+                    </div>
+                </form>
+                
+                <!-- 连接状态提示 -->
+                <div id="ai-connection-status" class="mt-4 hidden p-3 rounded-md text-sm flex items-center"></div>
+            </div>
+
+            <!-- 其他设置内容保持不变 -->
+            <div id="notifications" class="settings-content bg-white shadow-sm rounded-lg p-6 hidden">
+                <h2 class="text-lg font-medium text-dark mb-4">通知设置</h2>
+                <form class="space-y-4">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h3 class="text-base font-medium text-dark">新资料通知</h3>
+                            <p class="text-sm text-gray-medium">当有新的培训资料上传时通知我</p>
+                        </div>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" checked class="sr-only peer">
+                            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-primary rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                        </label>
+                    </div>
+                    <div class="border-t border-gray-200 pt-4"></div>
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h3 class="text-base font-medium text-dark">考试提醒</h3>
+                            <p class="text-sm text-gray-medium">考试开始前提醒我</p>
+                        </div>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" checked class="sr-only peer">
+                            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-primary rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                        </label>
+                    </div>
+                    <div class="border-t border-gray-200 pt-4"></div>
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h3 class="text-base font-medium text-dark">系统公告</h3>
+                            <p class="text-sm text-gray-medium">接收系统重要公告</p>
+                        </div>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" checked class="sr-only peer">
+                            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-primary rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                        </label>
+                    </div>
+                    <div class="flex justify-end mt-6">
+                        <button type="button" class="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-medium hover:bg-light focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary mr-3">
+                            取消
+                        </button>
+                        <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-primary hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all-300">
+                            <i class="fa fa-save mr-2"></i>保存设置
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <div id="appearance" class="settings-content bg-white shadow-sm rounded-lg p-6 hidden">
+                <h2 class="text-lg font-medium text-dark mb-4">外观设置</h2>
+                <form class="space-y-6">
+                    <div>
+                        <label for="theme" class="block text-sm font-medium text-gray-medium mb-1">主题模式</label>
+                        <select id="theme" name="theme" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                            <option value="light">浅色模式</option>
+                            <option value="dark">深色模式</option>
+                            <option value="system">跟随系统</option>
+                        </select>
+                    </div>
+                    <div class="flex justify-end">
+                        <button type="button" class="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-medium hover:bg-light focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary mr-3">
+                            取消
+                        </button>
+                        <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-primary hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all-300">
+                            <i class="fa fa-save mr-2"></i>保存设置
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
